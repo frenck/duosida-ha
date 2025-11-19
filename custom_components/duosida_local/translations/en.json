@@ -1,0 +1,113 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Duosida EV Charger Setup",
+        "description": "Choose how to add your charger",
+        "data": {
+          "discovery": "Auto-discover chargers on network"
+        }
+      },
+      "discovery": {
+        "title": "Select Charger",
+        "description": "Select your charger from the list",
+        "data": {
+          "device": "Charger"
+        }
+      },
+      "manual": {
+        "title": "Manual Configuration",
+        "description": "Enter your charger details",
+        "data": {
+          "host": "IP Address",
+          "port": "Port",
+          "device_id": "Device ID (optional)",
+          "scan_interval": "Update interval (seconds)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect to charger",
+      "no_devices_found": "No chargers found on network"
+    },
+    "abort": {
+      "already_configured": "Device is already configured"
+    }
+  },
+  "entity": {
+    "sensor": {
+      "state": {
+        "name": "Status"
+      },
+      "cp_voltage": {
+        "name": "CP Voltage"
+      },
+      "voltage": {
+        "name": "Voltage"
+      },
+      "voltage_l2": {
+        "name": "Voltage L2"
+      },
+      "voltage_l3": {
+        "name": "Voltage L3"
+      },
+      "current": {
+        "name": "Current"
+      },
+      "current_l2": {
+        "name": "Current L2"
+      },
+      "current_l3": {
+        "name": "Current L3"
+      },
+      "power": {
+        "name": "Power"
+      },
+      "temperature": {
+        "name": "Temperature"
+      },
+      "session_energy": {
+        "name": "Session Energy"
+      },
+      "session_time": {
+        "name": "Session Time"
+      },
+      "model": {
+        "name": "Model"
+      },
+      "manufacturer": {
+        "name": "Manufacturer"
+      },
+      "firmware": {
+        "name": "Firmware"
+      }
+    },
+    "switch": {
+      "charging": {
+        "name": "Charging"
+      },
+      "direct_mode": {
+        "name": "Direct Mode"
+      },
+      "stop_on_disconnect": {
+        "name": "Stop Session on Vehicle Disconnect"
+      }
+    },
+    "number": {
+      "max_current": {
+        "name": "Max Charging Current"
+      },
+      "led_brightness": {
+        "name": "LED Brightness"
+      }
+    },
+    "button": {
+      "start": {
+        "name": "Start Charging"
+      },
+      "stop": {
+        "name": "Stop Charging"
+      }
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "domain": "duosida_local",
+  "name": "Duosida EV Charger (Local)",
+  "codeowners": ["@americodias"],
+  "config_flow": true,
+  "documentation": "https://github.com/americodias/duosida-ha",
+  "integration_type": "device",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/americodias/duosida-ha/issues",
+  "requirements": ["duosida-ev==0.1.2"],
+  "version": "1.0.0",
+  "loggers": ["duosida_local"]
+}

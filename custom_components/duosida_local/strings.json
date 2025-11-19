@@ -1,0 +1,37 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Duosida EV Charger Setup",
+        "description": "Choose how to add your charger",
+        "data": {
+          "discovery": "Auto-discover chargers on network"
+        }
+      },
+      "discovery": {
+        "title": "Select Charger",
+        "description": "Select your charger from the list",
+        "data": {
+          "device": "Charger"
+        }
+      },
+      "manual": {
+        "title": "Manual Configuration",
+        "description": "Enter your charger details",
+        "data": {
+          "host": "IP Address",
+          "port": "Port",
+          "device_id": "Device ID (optional)",
+          "scan_interval": "Update interval (seconds)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect to charger",
+      "no_devices_found": "No chargers found on network"
+    },
+    "abort": {
+      "already_configured": "Device is already configured"
+    }
+  }
+}
