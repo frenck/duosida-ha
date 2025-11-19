@@ -4,6 +4,7 @@
   "codeowners": ["@americodias"],
   "config_flow": true,
   "documentation": "https://github.com/americodias/duosida-ha",
+  "icon": "mdi:ev-station",
   "integration_type": "device",
   "iot_class": "local_polling",
   "issue_tracker": "https://github.com/americodias/duosida-ha/issues",
