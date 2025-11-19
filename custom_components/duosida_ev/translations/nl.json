@@ -1,0 +1,125 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Duosida EV Oplader Installatie",
+        "description": "Kies hoe u uw oplader wilt toevoegen",
+        "data": {
+          "discovery": "Detecteer automatisch opladers op het netwerk"
+        }
+      },
+      "discovery": {
+        "title": "Selecteer Oplader",
+        "description": "Selecteer uw oplader uit de lijst",
+        "data": {
+          "device": "Oplader"
+        }
+      },
+      "manual": {
+        "title": "Handmatige Configuratie",
+        "description": "Voer de gegevens van uw oplader in",
+        "data": {
+          "host": "IP-adres",
+          "port": "Poort",
+          "device_id": "Apparaat-ID (optioneel)",
+          "scan_interval": "Update-interval (seconden)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Verbinding met oplader mislukt",
+      "no_devices_found": "Geen opladers gevonden op het netwerk"
+    },
+    "abort": {
+      "already_configured": "Apparaat is al geconfigureerd"
+    }
+  },
+  "entity": {
+    "sensor": {
+      "state": {
+        "name": "Status"
+      },
+      "cp_voltage": {
+        "name": "CP-spanning"
+      },
+      "voltage": {
+        "name": "Spanning"
+      },
+      "voltage_l2": {
+        "name": "Spanning L2"
+      },
+      "voltage_l3": {
+        "name": "Spanning L3"
+      },
+      "current": {
+        "name": "Stroom"
+      },
+      "current_l2": {
+        "name": "Stroom L2"
+      },
+      "current_l3": {
+        "name": "Stroom L3"
+      },
+      "power": {
+        "name": "Vermogen"
+      },
+      "temperature": {
+        "name": "Temperatuur"
+      },
+      "session_energy": {
+        "name": "Sessie Energie"
+      },
+      "session_time": {
+        "name": "Sessietijd"
+      },
+      "total_energy": {
+        "name": "Totale Energie"
+      },
+      "model": {
+        "name": "Model"
+      },
+      "manufacturer": {
+        "name": "Fabrikant"
+      },
+      "firmware": {
+        "name": "Firmware"
+      }
+    },
+    "switch": {
+      "charging": {
+        "name": "Opladen"
+      },
+      "direct_mode": {
+        "name": "Directe Modus"
+      },
+      "stop_on_disconnect": {
+        "name": "Stop Sessie bij Loskoppelen Voertuig"
+      }
+    },
+    "number": {
+      "max_current": {
+        "name": "Maximale Laadstroom"
+      },
+      "led_brightness": {
+        "name": "LED-helderheid"
+      },
+      "max_voltage": {
+        "name": "Maximale Spanning"
+      },
+      "min_voltage": {
+        "name": "Minimale Spanning"
+      }
+    },
+    "button": {
+      "start": {
+        "name": "Start Opladen"
+      },
+      "stop": {
+        "name": "Stop Opladen"
+      },
+      "reset_energy": {
+        "name": "Reset Totale Energie"
+      }
+    }
+  }
+}

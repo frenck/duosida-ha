@@ -1,0 +1,125 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "إعداد شاحن Duosida EV",
+        "description": "اختر كيفية إضافة الشاحن الخاص بك",
+        "data": {
+          "discovery": "اكتشاف الشواحن على الشبكة تلقائيًا"
+        }
+      },
+      "discovery": {
+        "title": "حدد الشاحن",
+        "description": "حدد الشاحن الخاص بك من القائمة",
+        "data": {
+          "device": "الشاحن"
+        }
+      },
+      "manual": {
+        "title": "التكوين اليدوي",
+        "description": "أدخل تفاصيل الشاحن الخاص بك",
+        "data": {
+          "host": "عنوان IP",
+          "port": "المنفذ",
+          "device_id": "معرف الجهاز (اختياري)",
+          "scan_interval": "فترة التحديث (بالثواني)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "فشل الاتصال بالشاحن",
+      "no_devices_found": "لم يتم العثور على شواحن على الشبكة"
+    },
+    "abort": {
+      "already_configured": "الجهاز تم تكوينه بالفعل"
+    }
+  },
+  "entity": {
+    "sensor": {
+      "state": {
+        "name": "الحالة"
+      },
+      "cp_voltage": {
+        "name": "جهد CP"
+      },
+      "voltage": {
+        "name": "الجهد"
+      },
+      "voltage_l2": {
+        "name": "الجهد L2"
+      },
+      "voltage_l3": {
+        "name": "الجهد L3"
+      },
+      "current": {
+        "name": "التيار"
+      },
+      "current_l2": {
+        "name": "التيار L2"
+      },
+      "current_l3": {
+        "name": "التيار L3"
+      },
+      "power": {
+        "name": "الطاقة"
+      },
+      "temperature": {
+        "name": "درجة الحرارة"
+      },
+      "session_energy": {
+        "name": "طاقة الجلسة"
+      },
+      "session_time": {
+        "name": "وقت الجلسة"
+      },
+      "total_energy": {
+        "name": "الطاقة الإجمالية"
+      },
+      "model": {
+        "name": "الطراز"
+      },
+      "manufacturer": {
+        "name": "الشركة المصنعة"
+      },
+      "firmware": {
+        "name": "البرنامج الثابت"
+      }
+    },
+    "switch": {
+      "charging": {
+        "name": "الشحن"
+      },
+      "direct_mode": {
+        "name": "الوضع المباشر"
+      },
+      "stop_on_disconnect": {
+        "name": "إيقاف الجلسة عند فصل المركبة"
+      }
+    },
+    "number": {
+      "max_current": {
+        "name": "أقصى تيار شحن"
+      },
+      "led_brightness": {
+        "name": "سطوع LED"
+      },
+      "max_voltage": {
+        "name": "الجهد الأقصى"
+      },
+      "min_voltage": {
+        "name": "الجهد الأدنى"
+      }
+    },
+    "button": {
+      "start": {
+        "name": "بدء الشحن"
+      },
+      "stop": {
+        "name": "إيقاف الشحن"
+      },
+      "reset_energy": {
+        "name": "إعادة تعيين الطاقة الإجمالية"
+      }
+    }
+  }
+}

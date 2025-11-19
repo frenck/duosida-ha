@@ -1,0 +1,125 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Duosida EV Lader Oppsett",
+        "description": "Velg hvordan du vil legge til laderen din",
+        "data": {
+          "discovery": "Oppdage automatisk ladere på nettverket"
+        }
+      },
+      "discovery": {
+        "title": "Velg Lader",
+        "description": "Velg din lader fra listen",
+        "data": {
+          "device": "Lader"
+        }
+      },
+      "manual": {
+        "title": "Manuell Konfigurasjon",
+        "description": "Angi detaljene for laderen din",
+        "data": {
+          "host": "IP-adresse",
+          "port": "Port",
+          "device_id": "Enhets-ID (valgfritt)",
+          "scan_interval": "Oppdateringsintervall (sekunder)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Kunne ikke koble til laderen",
+      "no_devices_found": "Ingen ladere funnet på nettverket"
+    },
+    "abort": {
+      "already_configured": "Enheten er allerede konfigurert"
+    }
+  },
+  "entity": {
+    "sensor": {
+      "state": {
+        "name": "Status"
+      },
+      "cp_voltage": {
+        "name": "CP-spenning"
+      },
+      "voltage": {
+        "name": "Spenning"
+      },
+      "voltage_l2": {
+        "name": "Spenning L2"
+      },
+      "voltage_l3": {
+        "name": "Spenning L3"
+      },
+      "current": {
+        "name": "Strøm"
+      },
+      "current_l2": {
+        "name": "Strøm L2"
+      },
+      "current_l3": {
+        "name": "Strøm L3"
+      },
+      "power": {
+        "name": "Effekt"
+      },
+      "temperature": {
+        "name": "Temperatur"
+      },
+      "session_energy": {
+        "name": "Øktenergi"
+      },
+      "session_time": {
+        "name": "Økttid"
+      },
+      "total_energy": {
+        "name": "Total Energi"
+      },
+      "model": {
+        "name": "Modell"
+      },
+      "manufacturer": {
+        "name": "Produsent"
+      },
+      "firmware": {
+        "name": "Firmware"
+      }
+    },
+    "switch": {
+      "charging": {
+        "name": "Lading"
+      },
+      "direct_mode": {
+        "name": "Direktemodus"
+      },
+      "stop_on_disconnect": {
+        "name": "Stopp Økt ved Frakobling av Kjøretøy"
+      }
+    },
+    "number": {
+      "max_current": {
+        "name": "Maksimal Ladestrøm"
+      },
+      "led_brightness": {
+        "name": "LED-lysstyrke"
+      },
+      "max_voltage": {
+        "name": "Maksimal Spenning"
+      },
+      "min_voltage": {
+        "name": "Minimal Spenning"
+      }
+    },
+    "button": {
+      "start": {
+        "name": "Start Lading"
+      },
+      "stop": {
+        "name": "Stopp Lading"
+      },
+      "reset_energy": {
+        "name": "Tilbakestill Total Energi"
+      }
+    }
+  }
+}

@@ -1,0 +1,125 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Duosida EV Şarj Cihazı Kurulumu",
+        "description": "Şarj cihazınızı nasıl eklemek istediğinizi seçin",
+        "data": {
+          "discovery": "Ağdaki şarj cihazlarını otomatik olarak keşfet"
+        }
+      },
+      "discovery": {
+        "title": "Şarj Cihazını Seçin",
+        "description": "Listeden şarj cihazınızı seçin",
+        "data": {
+          "device": "Şarj Cihazı"
+        }
+      },
+      "manual": {
+        "title": "Manuel Yapılandırma",
+        "description": "Şarj cihazınızın ayrıntılarını girin",
+        "data": {
+          "host": "IP Adresi",
+          "port": "Port",
+          "device_id": "Cihaz Kimliği (isteğe bağlı)",
+          "scan_interval": "Güncelleme Aralığı (saniye)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Şarj cihazına bağlanılamadı",
+      "no_devices_found": "Ağda şarj cihazı bulunamadı"
+    },
+    "abort": {
+      "already_configured": "Cihaz zaten yapılandırılmış"
+    }
+  },
+  "entity": {
+    "sensor": {
+      "state": {
+        "name": "Durum"
+      },
+      "cp_voltage": {
+        "name": "CP Voltaj"
+      },
+      "voltage": {
+        "name": "Voltaj"
+      },
+      "voltage_l2": {
+        "name": "Voltaj L2"
+      },
+      "voltage_l3": {
+        "name": "Voltaj L3"
+      },
+      "current": {
+        "name": "Akım"
+      },
+      "current_l2": {
+        "name": "Akım L2"
+      },
+      "current_l3": {
+        "name": "Akım L3"
+      },
+      "power": {
+        "name": "Güç"
+      },
+      "temperature": {
+        "name": "Sıcaklık"
+      },
+      "session_energy": {
+        "name": "Oturum Enerjisi"
+      },
+      "session_time": {
+        "name": "Oturum Süresi"
+      },
+      "total_energy": {
+        "name": "Toplam Enerji"
+      },
+      "model": {
+        "name": "Model"
+      },
+      "manufacturer": {
+        "name": "Üretici"
+      },
+      "firmware": {
+        "name": "Ürün Yazılımı"
+      }
+    },
+    "switch": {
+      "charging": {
+        "name": "Şarj"
+      },
+      "direct_mode": {
+        "name": "Doğrudan Mod"
+      },
+      "stop_on_disconnect": {
+        "name": "Araç Bağlantısı Kesildiğinde Oturumu Durdur"
+      }
+    },
+    "number": {
+      "max_current": {
+        "name": "Maksimum Şarj Akımı"
+      },
+      "led_brightness": {
+        "name": "LED Parlaklığı"
+      },
+      "max_voltage": {
+        "name": "Maksimum Voltaj"
+      },
+      "min_voltage": {
+        "name": "Minimum Voltaj"
+      }
+    },
+    "button": {
+      "start": {
+        "name": "Şarjı Başlat"
+      },
+      "stop": {
+        "name": "Şarjı Durdur"
+      },
+      "reset_energy": {
+        "name": "Toplam Enerjiyi Sıfırla"
+      }
+    }
+  }
+}

@@ -1,0 +1,125 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Konfiguracja Ładowarki Duosida EV",
+        "description": "Wybierz sposób dodania ładowarki",
+        "data": {
+          "discovery": "Automatycznie wykryj ładowarki w sieci"
+        }
+      },
+      "discovery": {
+        "title": "Wybierz Ładowarkę",
+        "description": "Wybierz swoją ładowarkę z listy",
+        "data": {
+          "device": "Ładowarka"
+        }
+      },
+      "manual": {
+        "title": "Konfiguracja Ręczna",
+        "description": "Wprowadź szczegóły swojej ładowarki",
+        "data": {
+          "host": "Adres IP",
+          "port": "Port",
+          "device_id": "ID Urządzenia (opcjonalnie)",
+          "scan_interval": "Interwał aktualizacji (sekundy)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Nie udało się połączyć z ładowarką",
+      "no_devices_found": "Nie znaleziono ładowarek w sieci"
+    },
+    "abort": {
+      "already_configured": "Urządzenie jest już skonfigurowane"
+    }
+  },
+  "entity": {
+    "sensor": {
+      "state": {
+        "name": "Status"
+      },
+      "cp_voltage": {
+        "name": "Napięcie CP"
+      },
+      "voltage": {
+        "name": "Napięcie"
+      },
+      "voltage_l2": {
+        "name": "Napięcie L2"
+      },
+      "voltage_l3": {
+        "name": "Napięcie L3"
+      },
+      "current": {
+        "name": "Prąd"
+      },
+      "current_l2": {
+        "name": "Prąd L2"
+      },
+      "current_l3": {
+        "name": "Prąd L3"
+      },
+      "power": {
+        "name": "Moc"
+      },
+      "temperature": {
+        "name": "Temperatura"
+      },
+      "session_energy": {
+        "name": "Energia Sesji"
+      },
+      "session_time": {
+        "name": "Czas Sesji"
+      },
+      "total_energy": {
+        "name": "Całkowita Energia"
+      },
+      "model": {
+        "name": "Model"
+      },
+      "manufacturer": {
+        "name": "Producent"
+      },
+      "firmware": {
+        "name": "Oprogramowanie"
+      }
+    },
+    "switch": {
+      "charging": {
+        "name": "Ładowanie"
+      },
+      "direct_mode": {
+        "name": "Tryb Bezpośredni"
+      },
+      "stop_on_disconnect": {
+        "name": "Zatrzymaj Sesję przy Odłączeniu Pojazdu"
+      }
+    },
+    "number": {
+      "max_current": {
+        "name": "Maksymalny Prąd Ładowania"
+      },
+      "led_brightness": {
+        "name": "Jasność LED"
+      },
+      "max_voltage": {
+        "name": "Maksymalne Napięcie"
+      },
+      "min_voltage": {
+        "name": "Minimalne Napięcie"
+      }
+    },
+    "button": {
+      "start": {
+        "name": "Rozpocznij Ładowanie"
+      },
+      "stop": {
+        "name": "Zatrzymaj Ładowanie"
+      },
+      "reset_energy": {
+        "name": "Zresetuj Całkowitą Energię"
+      }
+    }
+  }
+}

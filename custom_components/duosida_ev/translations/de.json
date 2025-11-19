@@ -1,0 +1,125 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Duosida EV Ladegerät Einrichtung",
+        "description": "Wählen Sie, wie Sie Ihr Ladegerät hinzufügen möchten",
+        "data": {
+          "discovery": "Ladegeräte im Netzwerk automatisch erkennen"
+        }
+      },
+      "discovery": {
+        "title": "Ladegerät Auswählen",
+        "description": "Wählen Sie Ihr Ladegerät aus der Liste",
+        "data": {
+          "device": "Ladegerät"
+        }
+      },
+      "manual": {
+        "title": "Manuelle Konfiguration",
+        "description": "Geben Sie die Details Ihres Ladegeräts ein",
+        "data": {
+          "host": "IP-Adresse",
+          "port": "Port",
+          "device_id": "Geräte-ID (optional)",
+          "scan_interval": "Aktualisierungsintervall (Sekunden)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Verbindung zum Ladegerät fehlgeschlagen",
+      "no_devices_found": "Keine Ladegeräte im Netzwerk gefunden"
+    },
+    "abort": {
+      "already_configured": "Gerät ist bereits konfiguriert"
+    }
+  },
+  "entity": {
+    "sensor": {
+      "state": {
+        "name": "Status"
+      },
+      "cp_voltage": {
+        "name": "CP-Spannung"
+      },
+      "voltage": {
+        "name": "Spannung"
+      },
+      "voltage_l2": {
+        "name": "Spannung L2"
+      },
+      "voltage_l3": {
+        "name": "Spannung L3"
+      },
+      "current": {
+        "name": "Strom"
+      },
+      "current_l2": {
+        "name": "Strom L2"
+      },
+      "current_l3": {
+        "name": "Strom L3"
+      },
+      "power": {
+        "name": "Leistung"
+      },
+      "temperature": {
+        "name": "Temperatur"
+      },
+      "session_energy": {
+        "name": "Sitzungsenergie"
+      },
+      "session_time": {
+        "name": "Sitzungszeit"
+      },
+      "total_energy": {
+        "name": "Gesamtenergie"
+      },
+      "model": {
+        "name": "Modell"
+      },
+      "manufacturer": {
+        "name": "Hersteller"
+      },
+      "firmware": {
+        "name": "Firmware"
+      }
+    },
+    "switch": {
+      "charging": {
+        "name": "Laden"
+      },
+      "direct_mode": {
+        "name": "Direktmodus"
+      },
+      "stop_on_disconnect": {
+        "name": "Sitzung beim Trennen des Fahrzeugs Beenden"
+      }
+    },
+    "number": {
+      "max_current": {
+        "name": "Maximaler Ladestrom"
+      },
+      "led_brightness": {
+        "name": "LED-Helligkeit"
+      },
+      "max_voltage": {
+        "name": "Maximale Spannung"
+      },
+      "min_voltage": {
+        "name": "Minimale Spannung"
+      }
+    },
+    "button": {
+      "start": {
+        "name": "Laden Starten"
+      },
+      "stop": {
+        "name": "Laden Stoppen"
+      },
+      "reset_energy": {
+        "name": "Gesamtenergie Zurücksetzen"
+      }
+    }
+  }
+}

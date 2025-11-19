@@ -1,0 +1,125 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Duosida EV 充电器设置",
+        "description": "选择如何添加您的充电器",
+        "data": {
+          "discovery": "自动发现网络上的充电器"
+        }
+      },
+      "discovery": {
+        "title": "选择充电器",
+        "description": "从列表中选择您的充电器",
+        "data": {
+          "device": "充电器"
+        }
+      },
+      "manual": {
+        "title": "手动配置",
+        "description": "输入您的充电器详细信息",
+        "data": {
+          "host": "IP 地址",
+          "port": "端口",
+          "device_id": "设备 ID（可选）",
+          "scan_interval": "更新间隔（秒）"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "无法连接到充电器",
+      "no_devices_found": "网络上未发现充电器"
+    },
+    "abort": {
+      "already_configured": "设备已配置"
+    }
+  },
+  "entity": {
+    "sensor": {
+      "state": {
+        "name": "状态"
+      },
+      "cp_voltage": {
+        "name": "CP 电压"
+      },
+      "voltage": {
+        "name": "电压"
+      },
+      "voltage_l2": {
+        "name": "L2 电压"
+      },
+      "voltage_l3": {
+        "name": "L3 电压"
+      },
+      "current": {
+        "name": "电流"
+      },
+      "current_l2": {
+        "name": "L2 电流"
+      },
+      "current_l3": {
+        "name": "L3 电流"
+      },
+      "power": {
+        "name": "功率"
+      },
+      "temperature": {
+        "name": "温度"
+      },
+      "session_energy": {
+        "name": "会话能量"
+      },
+      "session_time": {
+        "name": "会话时间"
+      },
+      "total_energy": {
+        "name": "总能量"
+      },
+      "model": {
+        "name": "型号"
+      },
+      "manufacturer": {
+        "name": "制造商"
+      },
+      "firmware": {
+        "name": "固件"
+      }
+    },
+    "switch": {
+      "charging": {
+        "name": "充电"
+      },
+      "direct_mode": {
+        "name": "直接模式"
+      },
+      "stop_on_disconnect": {
+        "name": "车辆断开时停止会话"
+      }
+    },
+    "number": {
+      "max_current": {
+        "name": "最大充电电流"
+      },
+      "led_brightness": {
+        "name": "LED 亮度"
+      },
+      "max_voltage": {
+        "name": "最大电压"
+      },
+      "min_voltage": {
+        "name": "最小电压"
+      }
+    },
+    "button": {
+      "start": {
+        "name": "开始充电"
+      },
+      "stop": {
+        "name": "停止充电"
+      },
+      "reset_energy": {
+        "name": "重置总能量"
+      }
+    }
+  }
+}

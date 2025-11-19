@@ -1,0 +1,125 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Настройка Зарядной Станции Duosida EV",
+        "description": "Выберите способ добавления вашей зарядной станции",
+        "data": {
+          "discovery": "Автоматически обнаружить зарядные станции в сети"
+        }
+      },
+      "discovery": {
+        "title": "Выберите Зарядную Станцию",
+        "description": "Выберите вашу зарядную станцию из списка",
+        "data": {
+          "device": "Зарядная Станция"
+        }
+      },
+      "manual": {
+        "title": "Ручная Настройка",
+        "description": "Введите данные вашей зарядной станции",
+        "data": {
+          "host": "IP-адрес",
+          "port": "Порт",
+          "device_id": "ID Устройства (необязательно)",
+          "scan_interval": "Интервал обновления (секунды)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Не удалось подключиться к зарядной станции",
+      "no_devices_found": "Зарядные станции в сети не найдены"
+    },
+    "abort": {
+      "already_configured": "Устройство уже настроено"
+    }
+  },
+  "entity": {
+    "sensor": {
+      "state": {
+        "name": "Статус"
+      },
+      "cp_voltage": {
+        "name": "Напряжение CP"
+      },
+      "voltage": {
+        "name": "Напряжение"
+      },
+      "voltage_l2": {
+        "name": "Напряжение L2"
+      },
+      "voltage_l3": {
+        "name": "Напряжение L3"
+      },
+      "current": {
+        "name": "Ток"
+      },
+      "current_l2": {
+        "name": "Ток L2"
+      },
+      "current_l3": {
+        "name": "Ток L3"
+      },
+      "power": {
+        "name": "Мощность"
+      },
+      "temperature": {
+        "name": "Температура"
+      },
+      "session_energy": {
+        "name": "Энергия Сеанса"
+      },
+      "session_time": {
+        "name": "Время Сеанса"
+      },
+      "total_energy": {
+        "name": "Общая Энергия"
+      },
+      "model": {
+        "name": "Модель"
+      },
+      "manufacturer": {
+        "name": "Производитель"
+      },
+      "firmware": {
+        "name": "Прошивка"
+      }
+    },
+    "switch": {
+      "charging": {
+        "name": "Зарядка"
+      },
+      "direct_mode": {
+        "name": "Прямой Режим"
+      },
+      "stop_on_disconnect": {
+        "name": "Остановить Сеанс при Отключении Автомобиля"
+      }
+    },
+    "number": {
+      "max_current": {
+        "name": "Максимальный Ток Зарядки"
+      },
+      "led_brightness": {
+        "name": "Яркость Светодиода"
+      },
+      "max_voltage": {
+        "name": "Максимальное Напряжение"
+      },
+      "min_voltage": {
+        "name": "Минимальное Напряжение"
+      }
+    },
+    "button": {
+      "start": {
+        "name": "Начать Зарядку"
+      },
+      "stop": {
+        "name": "Остановить Зарядку"
+      },
+      "reset_energy": {
+        "name": "Сбросить Общую Энергию"
+      }
+    }
+  }
+}

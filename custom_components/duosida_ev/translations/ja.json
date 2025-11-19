@@ -1,0 +1,125 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Duosida EV 充電器セットアップ",
+        "description": "充電器を追加する方法を選択してください",
+        "data": {
+          "discovery": "ネットワーク上の充電器を自動検出"
+        }
+      },
+      "discovery": {
+        "title": "充電器を選択",
+        "description": "リストから充電器を選択してください",
+        "data": {
+          "device": "充電器"
+        }
+      },
+      "manual": {
+        "title": "手動設定",
+        "description": "充電器の詳細を入力してください",
+        "data": {
+          "host": "IP アドレス",
+          "port": "ポート",
+          "device_id": "デバイス ID（オプション）",
+          "scan_interval": "更新間隔（秒）"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "充電器への接続に失敗しました",
+      "no_devices_found": "ネットワーク上に充電器が見つかりませんでした"
+    },
+    "abort": {
+      "already_configured": "デバイスは既に設定されています"
+    }
+  },
+  "entity": {
+    "sensor": {
+      "state": {
+        "name": "ステータス"
+      },
+      "cp_voltage": {
+        "name": "CP 電圧"
+      },
+      "voltage": {
+        "name": "電圧"
+      },
+      "voltage_l2": {
+        "name": "L2 電圧"
+      },
+      "voltage_l3": {
+        "name": "L3 電圧"
+      },
+      "current": {
+        "name": "電流"
+      },
+      "current_l2": {
+        "name": "L2 電流"
+      },
+      "current_l3": {
+        "name": "L3 電流"
+      },
+      "power": {
+        "name": "電力"
+      },
+      "temperature": {
+        "name": "温度"
+      },
+      "session_energy": {
+        "name": "セッションエネルギー"
+      },
+      "session_time": {
+        "name": "セッション時間"
+      },
+      "total_energy": {
+        "name": "総エネルギー"
+      },
+      "model": {
+        "name": "モデル"
+      },
+      "manufacturer": {
+        "name": "製造元"
+      },
+      "firmware": {
+        "name": "ファームウェア"
+      }
+    },
+    "switch": {
+      "charging": {
+        "name": "充電"
+      },
+      "direct_mode": {
+        "name": "ダイレクトモード"
+      },
+      "stop_on_disconnect": {
+        "name": "車両切断時にセッションを停止"
+      }
+    },
+    "number": {
+      "max_current": {
+        "name": "最大充電電流"
+      },
+      "led_brightness": {
+        "name": "LED 輝度"
+      },
+      "max_voltage": {
+        "name": "最大電圧"
+      },
+      "min_voltage": {
+        "name": "最小電圧"
+      }
+    },
+    "button": {
+      "start": {
+        "name": "充電開始"
+      },
+      "stop": {
+        "name": "充電停止"
+      },
+      "reset_energy": {
+        "name": "総エネルギーをリセット"
+      }
+    }
+  }
+}

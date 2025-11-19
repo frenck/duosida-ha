@@ -1,0 +1,125 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Duosida EV 充電器設定",
+        "description": "選擇如何新增您的充電器",
+        "data": {
+          "discovery": "自動探索網路上的充電器"
+        }
+      },
+      "discovery": {
+        "title": "選擇充電器",
+        "description": "從清單中選擇您的充電器",
+        "data": {
+          "device": "充電器"
+        }
+      },
+      "manual": {
+        "title": "手動設定",
+        "description": "輸入您的充電器詳細資訊",
+        "data": {
+          "host": "IP 位址",
+          "port": "連接埠",
+          "device_id": "裝置 ID（選填）",
+          "scan_interval": "更新間隔（秒）"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "無法連接到充電器",
+      "no_devices_found": "網路上未發現充電器"
+    },
+    "abort": {
+      "already_configured": "裝置已設定"
+    }
+  },
+  "entity": {
+    "sensor": {
+      "state": {
+        "name": "狀態"
+      },
+      "cp_voltage": {
+        "name": "CP 電壓"
+      },
+      "voltage": {
+        "name": "電壓"
+      },
+      "voltage_l2": {
+        "name": "L2 電壓"
+      },
+      "voltage_l3": {
+        "name": "L3 電壓"
+      },
+      "current": {
+        "name": "電流"
+      },
+      "current_l2": {
+        "name": "L2 電流"
+      },
+      "current_l3": {
+        "name": "L3 電流"
+      },
+      "power": {
+        "name": "功率"
+      },
+      "temperature": {
+        "name": "溫度"
+      },
+      "session_energy": {
+        "name": "工作階段能量"
+      },
+      "session_time": {
+        "name": "工作階段時間"
+      },
+      "total_energy": {
+        "name": "總能量"
+      },
+      "model": {
+        "name": "型號"
+      },
+      "manufacturer": {
+        "name": "製造商"
+      },
+      "firmware": {
+        "name": "韌體"
+      }
+    },
+    "switch": {
+      "charging": {
+        "name": "充電"
+      },
+      "direct_mode": {
+        "name": "直接模式"
+      },
+      "stop_on_disconnect": {
+        "name": "車輛中斷連線時停止工作階段"
+      }
+    },
+    "number": {
+      "max_current": {
+        "name": "最大充電電流"
+      },
+      "led_brightness": {
+        "name": "LED 亮度"
+      },
+      "max_voltage": {
+        "name": "最大電壓"
+      },
+      "min_voltage": {
+        "name": "最小電壓"
+      }
+    },
+    "button": {
+      "start": {
+        "name": "開始充電"
+      },
+      "stop": {
+        "name": "停止充電"
+      },
+      "reset_energy": {
+        "name": "重設總能量"
+      }
+    }
+  }
+}

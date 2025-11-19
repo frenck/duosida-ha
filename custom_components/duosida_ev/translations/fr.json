@@ -1,0 +1,125 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configuration du Chargeur Duosida EV",
+        "description": "Choisissez comment ajouter votre chargeur",
+        "data": {
+          "discovery": "Découvrir automatiquement les chargeurs sur le réseau"
+        }
+      },
+      "discovery": {
+        "title": "Sélectionner le Chargeur",
+        "description": "Sélectionnez votre chargeur dans la liste",
+        "data": {
+          "device": "Chargeur"
+        }
+      },
+      "manual": {
+        "title": "Configuration Manuelle",
+        "description": "Entrez les détails de votre chargeur",
+        "data": {
+          "host": "Adresse IP",
+          "port": "Port",
+          "device_id": "ID du Périphérique (facultatif)",
+          "scan_interval": "Intervalle de mise à jour (secondes)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Échec de la connexion au chargeur",
+      "no_devices_found": "Aucun chargeur trouvé sur le réseau"
+    },
+    "abort": {
+      "already_configured": "Le périphérique est déjà configuré"
+    }
+  },
+  "entity": {
+    "sensor": {
+      "state": {
+        "name": "État"
+      },
+      "cp_voltage": {
+        "name": "Tension CP"
+      },
+      "voltage": {
+        "name": "Tension"
+      },
+      "voltage_l2": {
+        "name": "Tension L2"
+      },
+      "voltage_l3": {
+        "name": "Tension L3"
+      },
+      "current": {
+        "name": "Courant"
+      },
+      "current_l2": {
+        "name": "Courant L2"
+      },
+      "current_l3": {
+        "name": "Courant L3"
+      },
+      "power": {
+        "name": "Puissance"
+      },
+      "temperature": {
+        "name": "Température"
+      },
+      "session_energy": {
+        "name": "Énergie de la Session"
+      },
+      "session_time": {
+        "name": "Durée de la Session"
+      },
+      "total_energy": {
+        "name": "Énergie Totale"
+      },
+      "model": {
+        "name": "Modèle"
+      },
+      "manufacturer": {
+        "name": "Fabricant"
+      },
+      "firmware": {
+        "name": "Micrologiciel"
+      }
+    },
+    "switch": {
+      "charging": {
+        "name": "Charge"
+      },
+      "direct_mode": {
+        "name": "Mode Direct"
+      },
+      "stop_on_disconnect": {
+        "name": "Arrêter la Session à la Déconnexion du Véhicule"
+      }
+    },
+    "number": {
+      "max_current": {
+        "name": "Courant Maximum de Charge"
+      },
+      "led_brightness": {
+        "name": "Luminosité de la LED"
+      },
+      "max_voltage": {
+        "name": "Tension Maximale"
+      },
+      "min_voltage": {
+        "name": "Tension Minimale"
+      }
+    },
+    "button": {
+      "start": {
+        "name": "Démarrer la Charge"
+      },
+      "stop": {
+        "name": "Arrêter la Charge"
+      },
+      "reset_energy": {
+        "name": "Réinitialiser l'Énergie Totale"
+      }
+    }
+  }
+}

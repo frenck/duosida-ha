@@ -1,0 +1,125 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Duosida EV Laddare Installation",
+        "description": "Välj hur du vill lägga till din laddare",
+        "data": {
+          "discovery": "Upptäck automatiskt laddare på nätverket"
+        }
+      },
+      "discovery": {
+        "title": "Välj Laddare",
+        "description": "Välj din laddare från listan",
+        "data": {
+          "device": "Laddare"
+        }
+      },
+      "manual": {
+        "title": "Manuell Konfiguration",
+        "description": "Ange information om din laddare",
+        "data": {
+          "host": "IP-adress",
+          "port": "Port",
+          "device_id": "Enhets-ID (valfritt)",
+          "scan_interval": "Uppdateringsintervall (sekunder)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Kunde inte ansluta till laddaren",
+      "no_devices_found": "Inga laddare hittades på nätverket"
+    },
+    "abort": {
+      "already_configured": "Enheten är redan konfigurerad"
+    }
+  },
+  "entity": {
+    "sensor": {
+      "state": {
+        "name": "Status"
+      },
+      "cp_voltage": {
+        "name": "CP-spänning"
+      },
+      "voltage": {
+        "name": "Spänning"
+      },
+      "voltage_l2": {
+        "name": "Spänning L2"
+      },
+      "voltage_l3": {
+        "name": "Spänning L3"
+      },
+      "current": {
+        "name": "Ström"
+      },
+      "current_l2": {
+        "name": "Ström L2"
+      },
+      "current_l3": {
+        "name": "Ström L3"
+      },
+      "power": {
+        "name": "Effekt"
+      },
+      "temperature": {
+        "name": "Temperatur"
+      },
+      "session_energy": {
+        "name": "Sessionsenergi"
+      },
+      "session_time": {
+        "name": "Sessionstid"
+      },
+      "total_energy": {
+        "name": "Total Energi"
+      },
+      "model": {
+        "name": "Modell"
+      },
+      "manufacturer": {
+        "name": "Tillverkare"
+      },
+      "firmware": {
+        "name": "Firmware"
+      }
+    },
+    "switch": {
+      "charging": {
+        "name": "Laddning"
+      },
+      "direct_mode": {
+        "name": "Direktläge"
+      },
+      "stop_on_disconnect": {
+        "name": "Stoppa Session vid Frånkoppling av Fordon"
+      }
+    },
+    "number": {
+      "max_current": {
+        "name": "Maximal Laddström"
+      },
+      "led_brightness": {
+        "name": "LED-ljusstyrka"
+      },
+      "max_voltage": {
+        "name": "Maximal Spänning"
+      },
+      "min_voltage": {
+        "name": "Minimal Spänning"
+      }
+    },
+    "button": {
+      "start": {
+        "name": "Starta Laddning"
+      },
+      "stop": {
+        "name": "Stoppa Laddning"
+      },
+      "reset_energy": {
+        "name": "Återställ Total Energi"
+      }
+    }
+  }
+}

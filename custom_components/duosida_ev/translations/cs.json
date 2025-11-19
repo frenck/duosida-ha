@@ -1,0 +1,125 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Nastavení Nabíječky Duosida EV",
+        "description": "Vyberte, jak chcete přidat svou nabíječku",
+        "data": {
+          "discovery": "Automaticky objevit nabíječky v síti"
+        }
+      },
+      "discovery": {
+        "title": "Vyberte Nabíječku",
+        "description": "Vyberte svou nabíječku ze seznamu",
+        "data": {
+          "device": "Nabíječka"
+        }
+      },
+      "manual": {
+        "title": "Ruční Konfigurace",
+        "description": "Zadejte podrobnosti o vaší nabíječce",
+        "data": {
+          "host": "IP adresa",
+          "port": "Port",
+          "device_id": "ID Zařízení (volitelné)",
+          "scan_interval": "Interval aktualizace (sekundy)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Připojení k nabíječce se nezdařilo",
+      "no_devices_found": "V síti nebyly nalezeny žádné nabíječky"
+    },
+    "abort": {
+      "already_configured": "Zařízení je již nakonfigurováno"
+    }
+  },
+  "entity": {
+    "sensor": {
+      "state": {
+        "name": "Stav"
+      },
+      "cp_voltage": {
+        "name": "Napětí CP"
+      },
+      "voltage": {
+        "name": "Napětí"
+      },
+      "voltage_l2": {
+        "name": "Napětí L2"
+      },
+      "voltage_l3": {
+        "name": "Napětí L3"
+      },
+      "current": {
+        "name": "Proud"
+      },
+      "current_l2": {
+        "name": "Proud L2"
+      },
+      "current_l3": {
+        "name": "Proud L3"
+      },
+      "power": {
+        "name": "Výkon"
+      },
+      "temperature": {
+        "name": "Teplota"
+      },
+      "session_energy": {
+        "name": "Energie Relace"
+      },
+      "session_time": {
+        "name": "Čas Relace"
+      },
+      "total_energy": {
+        "name": "Celková Energie"
+      },
+      "model": {
+        "name": "Model"
+      },
+      "manufacturer": {
+        "name": "Výrobce"
+      },
+      "firmware": {
+        "name": "Firmware"
+      }
+    },
+    "switch": {
+      "charging": {
+        "name": "Nabíjení"
+      },
+      "direct_mode": {
+        "name": "Přímý Režim"
+      },
+      "stop_on_disconnect": {
+        "name": "Zastavit Relaci při Odpojení Vozidla"
+      }
+    },
+    "number": {
+      "max_current": {
+        "name": "Maximální Nabíjecí Proud"
+      },
+      "led_brightness": {
+        "name": "Jas LED"
+      },
+      "max_voltage": {
+        "name": "Maximální Napětí"
+      },
+      "min_voltage": {
+        "name": "Minimální Napětí"
+      }
+    },
+    "button": {
+      "start": {
+        "name": "Spustit Nabíjení"
+      },
+      "stop": {
+        "name": "Zastavit Nabíjení"
+      },
+      "reset_energy": {
+        "name": "Resetovat Celkovou Energii"
+      }
+    }
+  }
+}

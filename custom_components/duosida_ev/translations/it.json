@@ -1,0 +1,125 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configurazione Caricatore Duosida EV",
+        "description": "Scegli come aggiungere il tuo caricatore",
+        "data": {
+          "discovery": "Rileva automaticamente i caricatori sulla rete"
+        }
+      },
+      "discovery": {
+        "title": "Seleziona Caricatore",
+        "description": "Seleziona il tuo caricatore dalla lista",
+        "data": {
+          "device": "Caricatore"
+        }
+      },
+      "manual": {
+        "title": "Configurazione Manuale",
+        "description": "Inserisci i dettagli del tuo caricatore",
+        "data": {
+          "host": "Indirizzo IP",
+          "port": "Porta",
+          "device_id": "ID Dispositivo (facoltativo)",
+          "scan_interval": "Intervallo di aggiornamento (secondi)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Impossibile connettersi al caricatore",
+      "no_devices_found": "Nessun caricatore trovato sulla rete"
+    },
+    "abort": {
+      "already_configured": "Il dispositivo è già configurato"
+    }
+  },
+  "entity": {
+    "sensor": {
+      "state": {
+        "name": "Stato"
+      },
+      "cp_voltage": {
+        "name": "Tensione CP"
+      },
+      "voltage": {
+        "name": "Tensione"
+      },
+      "voltage_l2": {
+        "name": "Tensione L2"
+      },
+      "voltage_l3": {
+        "name": "Tensione L3"
+      },
+      "current": {
+        "name": "Corrente"
+      },
+      "current_l2": {
+        "name": "Corrente L2"
+      },
+      "current_l3": {
+        "name": "Corrente L3"
+      },
+      "power": {
+        "name": "Potenza"
+      },
+      "temperature": {
+        "name": "Temperatura"
+      },
+      "session_energy": {
+        "name": "Energia di Sessione"
+      },
+      "session_time": {
+        "name": "Tempo di Sessione"
+      },
+      "total_energy": {
+        "name": "Energia Totale"
+      },
+      "model": {
+        "name": "Modello"
+      },
+      "manufacturer": {
+        "name": "Produttore"
+      },
+      "firmware": {
+        "name": "Firmware"
+      }
+    },
+    "switch": {
+      "charging": {
+        "name": "Ricarica"
+      },
+      "direct_mode": {
+        "name": "Modalità Diretta"
+      },
+      "stop_on_disconnect": {
+        "name": "Ferma Sessione alla Disconnessione del Veicolo"
+      }
+    },
+    "number": {
+      "max_current": {
+        "name": "Corrente Massima di Ricarica"
+      },
+      "led_brightness": {
+        "name": "Luminosità LED"
+      },
+      "max_voltage": {
+        "name": "Tensione Massima"
+      },
+      "min_voltage": {
+        "name": "Tensione Minima"
+      }
+    },
+    "button": {
+      "start": {
+        "name": "Avvia Ricarica"
+      },
+      "stop": {
+        "name": "Ferma Ricarica"
+      },
+      "reset_energy": {
+        "name": "Reimposta Energia Totale"
+      }
+    }
+  }
+}

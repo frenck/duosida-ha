@@ -1,0 +1,125 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Duosida EV Oplader Opsætning",
+        "description": "Vælg hvordan du vil tilføje din oplader",
+        "data": {
+          "discovery": "Find automatisk opladere på netværket"
+        }
+      },
+      "discovery": {
+        "title": "Vælg Oplader",
+        "description": "Vælg din oplader fra listen",
+        "data": {
+          "device": "Oplader"
+        }
+      },
+      "manual": {
+        "title": "Manuel Konfiguration",
+        "description": "Indtast oplysninger om din oplader",
+        "data": {
+          "host": "IP-adresse",
+          "port": "Port",
+          "device_id": "Enheds-ID (valgfrit)",
+          "scan_interval": "Opdateringsinterval (sekunder)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Kunne ikke oprette forbindelse til opladeren",
+      "no_devices_found": "Ingen opladere fundet på netværket"
+    },
+    "abort": {
+      "already_configured": "Enheden er allerede konfigureret"
+    }
+  },
+  "entity": {
+    "sensor": {
+      "state": {
+        "name": "Status"
+      },
+      "cp_voltage": {
+        "name": "CP-spænding"
+      },
+      "voltage": {
+        "name": "Spænding"
+      },
+      "voltage_l2": {
+        "name": "Spænding L2"
+      },
+      "voltage_l3": {
+        "name": "Spænding L3"
+      },
+      "current": {
+        "name": "Strøm"
+      },
+      "current_l2": {
+        "name": "Strøm L2"
+      },
+      "current_l3": {
+        "name": "Strøm L3"
+      },
+      "power": {
+        "name": "Effekt"
+      },
+      "temperature": {
+        "name": "Temperatur"
+      },
+      "session_energy": {
+        "name": "Sessionsenergi"
+      },
+      "session_time": {
+        "name": "Sessionstid"
+      },
+      "total_energy": {
+        "name": "Total Energi"
+      },
+      "model": {
+        "name": "Model"
+      },
+      "manufacturer": {
+        "name": "Producent"
+      },
+      "firmware": {
+        "name": "Firmware"
+      }
+    },
+    "switch": {
+      "charging": {
+        "name": "Opladning"
+      },
+      "direct_mode": {
+        "name": "Direkte Tilstand"
+      },
+      "stop_on_disconnect": {
+        "name": "Stop Session ved Frakobling af Køretøj"
+      }
+    },
+    "number": {
+      "max_current": {
+        "name": "Maksimal Opladningsstrøm"
+      },
+      "led_brightness": {
+        "name": "LED-lysstyrke"
+      },
+      "max_voltage": {
+        "name": "Maksimal Spænding"
+      },
+      "min_voltage": {
+        "name": "Minimal Spænding"
+      }
+    },
+    "button": {
+      "start": {
+        "name": "Start Opladning"
+      },
+      "stop": {
+        "name": "Stop Opladning"
+      },
+      "reset_energy": {
+        "name": "Nulstil Total Energi"
+      }
+    }
+  }
+}
