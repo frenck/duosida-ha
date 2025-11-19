@@ -72,6 +72,9 @@
       "session_time": {
         "name": "Session Time"
       },
+      "total_energy": {
+        "name": "Total Energy"
+      },
       "model": {
         "name": "Model"
       },
@@ -99,6 +102,12 @@
       },
       "led_brightness": {
         "name": "LED Brightness"
+      },
+      "max_voltage": {
+        "name": "Max Voltage"
+      },
+      "min_voltage": {
+        "name": "Min Voltage"
       }
     },
     "button": {
@@ -107,6 +116,9 @@
       },
       "stop": {
         "name": "Stop Charging"
+      },
+      "reset_energy": {
+        "name": "Reset Total Energy"
       }
     }
   }
