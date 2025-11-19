@@ -59,11 +59,19 @@ class DuosidaSensorEntityDescription(SensorEntityDescription):
 
 # Define all sensors
 # Each tuple entry creates one sensor entity
-# Order matches duosida-ev library's to_dict() method for consistency
+# Order: User preference for logical display flow
 SENSORS: tuple[DuosidaSensorEntityDescription, ...] = (
+    # Status sensor - shows the current charger state as text (FIRST - most important)
+    DuosidaSensorEntityDescription(
+        key="state",
+        name="Status",
+        icon="mdi:ev-station",
+        # Convert numeric status to readable text using STATUS_CODES dict
+        value_fn=lambda data: STATUS_CODES.get(data.get("conn_status", 0), "Unknown"),
+    ),
+
     # CP voltage - Control Pilot voltage level (actual reading from Field 9)
     # Used to determine vehicle state (12V=no vehicle, 9V=connected, 6V=charging)
-    # This comes FIRST in the library's to_dict() (after conn_status which isn't a sensor)
     DuosidaSensorEntityDescription(
         key="cp_voltage",
         name="CP Voltage",
@@ -72,16 +80,6 @@ SENSORS: tuple[DuosidaSensorEntityDescription, ...] = (
         state_class=SensorStateClass.MEASUREMENT,
         icon="mdi:ev-plug-type2",
         value_fn=lambda data: data.get("cp_voltage"),
-    ),
-
-    # Status sensor - shows the current charger state as text
-    # This comes SECOND in the library's to_dict() (as "state")
-    DuosidaSensorEntityDescription(
-        key="state",
-        name="Status",
-        icon="mdi:ev-station",
-        # Convert numeric status to readable text using STATUS_CODES dict
-        value_fn=lambda data: STATUS_CODES.get(data.get("conn_status", 0), "Unknown"),
     ),
 
     # Voltage sensor - Line voltage (L1)
@@ -158,16 +156,6 @@ SENSORS: tuple[DuosidaSensorEntityDescription, ...] = (
         value_fn=lambda data: data.get("power"),
     ),
 
-    # Temperature sensor - Charger station temperature
-    DuosidaSensorEntityDescription(
-        key="temperature",
-        name="Temperature",
-        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
-        device_class=SensorDeviceClass.TEMPERATURE,
-        state_class=SensorStateClass.MEASUREMENT,
-        value_fn=lambda data: data.get("temperature_station"),
-    ),
-
     # Session energy - Energy used in current charging session (reported by charger)
     DuosidaSensorEntityDescription(
         key="session_energy",
@@ -200,6 +188,16 @@ SENSORS: tuple[DuosidaSensorEntityDescription, ...] = (
         state_class=SensorStateClass.TOTAL_INCREASING,
         icon="mdi:lightning-bolt",
         value_fn=lambda data: data.get("total_energy"),
+    ),
+
+    # Temperature sensor - Charger station temperature
+    DuosidaSensorEntityDescription(
+        key="temperature",
+        name="Temperature",
+        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+        device_class=SensorDeviceClass.TEMPERATURE,
+        state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda data: data.get("temperature_station"),
     ),
 
     # Device info sensors - diagnostic information
