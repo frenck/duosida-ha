@@ -51,7 +51,7 @@ Home Assistant integration for **local control** of Duosida EV wall chargers. Th
 
 ### Manual Installation
 
-1. Copy the `custom_components/duosida_local` folder to your Home Assistant's `custom_components` directory
+1. Copy the `custom_components/duosida_ev` folder to your Home Assistant's `custom_components` directory
 2. Restart Home Assistant
 
 ## Configuration

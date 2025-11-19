@@ -89,7 +89,7 @@ class DuosidaDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         self._device_id = device_id
 
         # Storage for persisting settings that charger doesn't report back
-        # Key format: duosida_local.{device_id}
+        # Key format: duosida_ev.{device_id}
         self._store = Store(
             hass,
             STORAGE_VERSION,
@@ -121,7 +121,7 @@ class DuosidaDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         Load stored settings from Home Assistant storage.
 
         This should be called during setup, before the first refresh.
-        Settings are stored in .storage/duosida_local.{device_id}
+        Settings are stored in .storage/duosida_ev.{device_id}
         """
         stored = await self._store.async_load()
 

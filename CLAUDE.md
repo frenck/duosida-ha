@@ -11,7 +11,7 @@ Uses the `duosida-ev` Python library (PyPI) for low-level communication.
 ```
 duosida-ha/
 ├── custom_components/
-│   └── duosida_local/
+│   └── duosida_ev/
 │       ├── __init__.py          # Entry point, setup/unload
 │       ├── config_flow.py       # Setup wizard UI
 │       ├── coordinator.py       # Data fetching, settings persistence
@@ -91,7 +91,7 @@ All entities inherit from `CoordinatorEntity` which:
    - Entity shows the set value
 
 3. **On HA restart:**
-   - Load stored settings from `.storage/duosida_local.{device_id}`
+   - Load stored settings from `.storage/duosida_ev.{device_id}`
    - **Only sync settings that are not None** (i.e., user has explicitly set them)
    - Unknown settings remain unknown
 
@@ -222,7 +222,7 @@ CP_STATE_CODES = {
 
 ### Testing Locally
 
-1. Copy `custom_components/duosida_local` to your HA config
+1. Copy `custom_components/duosida_ev` to your HA config
 2. Restart Home Assistant
 3. Add integration via UI
 4. Check logs: Settings → System → Logs → filter "duosida"
@@ -294,11 +294,11 @@ result = await self.hass.async_add_executor_job(
 - Look at HA logs for connection errors
 
 **Settings don't persist:**
-- Check `.storage/duosida_local.*` file exists
+- Check `.storage/duosida_ev.*` file exists
 - Look for storage errors in logs
 
 **Values seem wrong:**
-- Enable debug logging: `logger.duosida_local: debug`
+- Enable debug logging: `logger.duosida_ev: debug`
 - Check raw data in coordinator
 
 ## Related Projects

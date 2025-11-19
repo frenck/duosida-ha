@@ -1,5 +1,5 @@
 """
-Constants for the Duosida Local integration.
+Constants for the Duosida EV Charger integration.
 
 This file contains all the constant values used throughout the integration.
 Keeping constants in one place makes them easy to find and update.
@@ -16,7 +16,7 @@ from typing import Final
 # Domain is the unique identifier for this integration
 # Used in hass.data, entity unique IDs, etc.
 # Must match the folder name and manifest.json domain
-DOMAIN: Final = "duosida_local"
+DOMAIN: Final = "duosida_ev"
 
 # Human-readable name shown in the UI
 NAME: Final = "Duosida EV Charger"
