@@ -272,3 +272,119 @@ async def test_coordinator_disconnect(
 
     # Charger should still be disconnected
     assert coordinator.charger._connected is False
+
+
+async def test_coordinator_connection_retry_success_on_second_attempt(
+    hass: HomeAssistant,
+    coordinator: DuosidaDataUpdateCoordinator,
+) -> None:
+    """Test coordinator retries and succeeds on second attempt."""
+    import asyncio
+
+    # Make first connection attempt fail, second succeed
+    call_count = 0
+
+    def connect_side_effect() -> bool:
+        nonlocal call_count
+        call_count += 1
+        if call_count == 1:
+            return False  # First attempt fails
+        return True  # Second attempt succeeds
+
+    coordinator.charger.connect = MagicMock(side_effect=connect_side_effect)
+
+    # Should succeed after retry
+    result = await coordinator._async_connect_with_retry()
+    assert result is True
+    assert call_count == 2  # Two attempts
+
+    # Allow any pending tasks to complete
+    await asyncio.sleep(0.1)
+    await hass.async_block_till_done()
+
+
+async def test_coordinator_connection_retry_all_attempts_fail(
+    hass: HomeAssistant,
+    coordinator: DuosidaDataUpdateCoordinator,
+) -> None:
+    """Test coordinator exhausts all retry attempts."""
+    import asyncio
+
+    # Make all connection attempts fail
+    coordinator.charger.connect = MagicMock(return_value=False)
+
+    # Should fail after all retries
+    result = await coordinator._async_connect_with_retry()
+    assert result is False
+
+    # Should have tried MAX_RETRY_ATTEMPTS times (3)
+    from custom_components.duosida_ev.const import MAX_RETRY_ATTEMPTS
+
+    assert coordinator.charger.connect.call_count == MAX_RETRY_ATTEMPTS
+
+    # Allow any pending tasks to complete
+    await asyncio.sleep(0.1)
+    await hass.async_block_till_done()
+
+
+async def test_coordinator_connection_retry_with_exception(
+    hass: HomeAssistant,
+    coordinator: DuosidaDataUpdateCoordinator,
+) -> None:
+    """Test coordinator retries when connection raises exception."""
+    import asyncio
+
+    # Make connection raise exception on first attempt, succeed on second
+    call_count = 0
+
+    def connect_side_effect() -> bool:
+        nonlocal call_count
+        call_count += 1
+        if call_count == 1:
+            raise ConnectionError("Network unreachable")
+        return True
+
+    coordinator.charger.connect = MagicMock(side_effect=connect_side_effect)
+
+    # Should recover from exception and succeed
+    result = await coordinator._async_connect_with_retry()
+    assert result is True
+    assert call_count == 2
+
+    # Allow any pending tasks to complete
+    await asyncio.sleep(0.1)
+    await hass.async_block_till_done()
+
+
+async def test_coordinator_update_with_retry_recovery(
+    hass: HomeAssistant,
+    coordinator: DuosidaDataUpdateCoordinator,
+) -> None:
+    """Test coordinator recovers from transient connection failure during update."""
+    import asyncio
+
+    # Simulate transient network issue: first attempt fails, second succeeds
+    call_count = 0
+    original_connect = coordinator.charger.connect
+
+    def connect_side_effect() -> bool:
+        nonlocal call_count
+        call_count += 1
+        if call_count == 1:
+            coordinator.charger._connected = False
+            return False
+        # Call the original connect method to properly set _connected state
+        return original_connect()
+
+    coordinator.charger.connect = MagicMock(side_effect=connect_side_effect)
+
+    # Should succeed after retry
+    await coordinator.async_config_entry_first_refresh()
+
+    assert coordinator.data is not None
+    assert coordinator.data["conn_status"] == 2
+    assert call_count == 2  # Retried once
+
+    # Allow any pending tasks to complete
+    await asyncio.sleep(0.1)
+    await hass.async_block_till_done()

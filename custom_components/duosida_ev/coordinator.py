@@ -35,7 +35,13 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 
 from duosida_ev import DuosidaCharger
 
-from .const import DOMAIN
+from .const import (
+    DOMAIN,
+    INITIAL_RETRY_DELAY,
+    MAX_RETRY_ATTEMPTS,
+    MAX_RETRY_DELAY,
+    RETRY_BACKOFF_MULTIPLIER,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -227,6 +233,98 @@ class DuosidaDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         """
         return self._stored_settings.get(key)
 
+    async def _async_connect_with_retry(self) -> bool:
+        """
+        Connect to charger with exponential backoff retry logic.
+
+        Implements auto-recovery from transient network errors by:
+        1. Attempting connection up to MAX_RETRY_ATTEMPTS times
+        2. Using exponential backoff between attempts (1s, 2s, 4s, ...)
+        3. Logging each attempt for troubleshooting
+
+        This significantly improves reliability when:
+        - Network is temporarily unstable
+        - Charger is briefly unresponsive
+        - Router is recovering from restart
+
+        Returns:
+            True if connection succeeded, False if all retries exhausted
+
+        Raises:
+            No exceptions - returns False on failure
+        """
+        import asyncio
+
+        retry_delay = INITIAL_RETRY_DELAY
+
+        for attempt in range(1, MAX_RETRY_ATTEMPTS + 1):
+            try:
+                _LOGGER.debug(
+                    "Connection attempt %d/%d to charger at %s",
+                    attempt,
+                    MAX_RETRY_ATTEMPTS,
+                    self.charger.host,
+                )
+
+                connected = await self.hass.async_add_executor_job(self.charger.connect)
+
+                if connected:
+                    if attempt > 1:
+                        _LOGGER.info(
+                            "Successfully connected to charger on attempt %d/%d",
+                            attempt,
+                            MAX_RETRY_ATTEMPTS,
+                        )
+                    return True
+
+                # Connection failed, prepare for retry
+                if attempt < MAX_RETRY_ATTEMPTS:
+                    _LOGGER.warning(
+                        "Connection attempt %d/%d failed, retrying in %.1fs",
+                        attempt,
+                        MAX_RETRY_ATTEMPTS,
+                        retry_delay,
+                    )
+                    await asyncio.sleep(retry_delay)
+
+                    # Exponential backoff with cap
+                    retry_delay = min(
+                        retry_delay * RETRY_BACKOFF_MULTIPLIER, MAX_RETRY_DELAY
+                    )
+                else:
+                    _LOGGER.error(
+                        "All %d connection attempts failed", MAX_RETRY_ATTEMPTS
+                    )
+
+            except Exception as err:
+                _LOGGER.debug(
+                    "Connection attempt %d/%d raised exception: %s",
+                    attempt,
+                    MAX_RETRY_ATTEMPTS,
+                    err,
+                )
+
+                if attempt < MAX_RETRY_ATTEMPTS:
+                    _LOGGER.warning(
+                        "Connection error on attempt %d/%d, retrying in %.1fs: %s",
+                        attempt,
+                        MAX_RETRY_ATTEMPTS,
+                        retry_delay,
+                        err,
+                    )
+                    await asyncio.sleep(retry_delay)
+                    retry_delay = min(
+                        retry_delay * RETRY_BACKOFF_MULTIPLIER, MAX_RETRY_DELAY
+                    )
+                else:
+                    _LOGGER.error(
+                        "Connection failed after %d attempts: %s",
+                        MAX_RETRY_ATTEMPTS,
+                        err,
+                    )
+
+        return False
+
     async def _async_update_data(self) -> dict[str, Any]:
         """
         Fetch data from the charger.
@@ -245,13 +343,13 @@ class DuosidaDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                          (causes HA to show entity as unavailable)
         """
         try:
-            # Connect to charger
-            _LOGGER.debug("Connecting to charger at %s", self.charger.host)
-
-            connected = await self.hass.async_add_executor_job(self.charger.connect)
+            # Connect to charger with retry logic
+            connected = await self._async_connect_with_retry()
 
             if not connected:
-                raise UpdateFailed("Failed to connect to charger")
+                raise UpdateFailed(
+                    f"Failed to connect to charger after {MAX_RETRY_ATTEMPTS} attempts"
+                )
 
             try:
                 # Small delay after connect - charger needs time to be ready
@@ -355,10 +453,14 @@ class DuosidaDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         try:
             _LOGGER.info("Sending %s command", command_name)
 
-            # Connect
-            connected = await self.hass.async_add_executor_job(self.charger.connect)
+            # Connect with retry logic
+            connected = await self._async_connect_with_retry()
             if not connected:
-                _LOGGER.error("Failed to connect for %s", command_name)
+                _LOGGER.error(
+                    "Failed to connect for %s after %d attempts",
+                    command_name,
+                    MAX_RETRY_ATTEMPTS,
+                )
                 return False
 
             try:

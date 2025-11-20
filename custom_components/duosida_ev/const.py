@@ -46,6 +46,23 @@ DEFAULT_PORT: Final = 9988
 DEFAULT_SCAN_INTERVAL: Final = 10
 
 # =============================================================================
+# Connection retry settings
+# =============================================================================
+
+# Maximum number of connection retry attempts before giving up
+MAX_RETRY_ATTEMPTS: Final = 3
+
+# Initial retry delay in seconds
+INITIAL_RETRY_DELAY: Final = 1.0
+
+# Retry delay multiplier for exponential backoff
+# Delay sequence: 1s, 2s, 4s (with multiplier of 2.0)
+RETRY_BACKOFF_MULTIPLIER: Final = 2.0
+
+# Maximum retry delay in seconds (cap for exponential backoff)
+MAX_RETRY_DELAY: Final = 10.0
+
+# =============================================================================
 # Status codes
 # =============================================================================
 
