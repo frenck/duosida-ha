@@ -14,7 +14,9 @@ async def test_max_current_number(
 ) -> None:
     """Test max charging current number entity."""
     # Check max current number entity exists
-    max_current = hass.states.get("number.duosida_ev_charger_max_charging_current")
+    max_current = hass.states.get(
+        "number.duosida_ev_charger_192_168_1_100_max_charging_current"
+    )
     assert max_current is not None
 
     # Check range
@@ -37,7 +39,7 @@ async def test_max_current_set_value(
             "number",
             "set_value",
             {
-                "entity_id": "number.duosida_ev_charger_max_charging_current",
+                "entity_id": "number.duosida_ev_charger_192_168_1_100_max_charging_current",
                 "value": 20,
             },
             blocking=True,
@@ -53,7 +55,9 @@ async def test_led_brightness_number(
 ) -> None:
     """Test LED brightness number entity."""
     # LED brightness is disabled by default
-    led_brightness = hass.states.get("number.duosida_ev_charger_led_brightness")
+    led_brightness = hass.states.get(
+        "number.duosida_ev_charger_192_168_1_100_led_brightness"
+    )
     assert led_brightness is None  # Disabled by default
 
 
@@ -63,7 +67,7 @@ async def test_max_voltage_number(
 ) -> None:
     """Test max voltage number entity."""
     # Max voltage is disabled by default
-    max_voltage = hass.states.get("number.duosida_ev_charger_max_voltage")
+    max_voltage = hass.states.get("number.duosida_ev_charger_192_168_1_100_max_voltage")
     assert max_voltage is None  # Disabled by default
 
 
@@ -73,5 +77,5 @@ async def test_min_voltage_number(
 ) -> None:
     """Test min voltage number entity."""
     # Min voltage is disabled by default
-    min_voltage = hass.states.get("number.duosida_ev_charger_min_voltage")
+    min_voltage = hass.states.get("number.duosida_ev_charger_192_168_1_100_min_voltage")
     assert min_voltage is None  # Disabled by default

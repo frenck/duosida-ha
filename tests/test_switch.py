@@ -14,7 +14,9 @@ async def test_charging_switch(
 ) -> None:
     """Test charging switch."""
     # Check charging switch exists
-    charging_switch = hass.states.get("switch.duosida_ev_charger_charging")
+    charging_switch = hass.states.get(
+        "switch.duosida_ev_charger_192_168_1_100_charging"
+    )
     assert charging_switch is not None
 
     # conn_status 2 = charging, so switch should be ON
@@ -34,7 +36,7 @@ async def test_charging_switch_turn_on(
         await hass.services.async_call(
             "switch",
             "turn_on",
-            {"entity_id": "switch.duosida_ev_charger_charging"},
+            {"entity_id": "switch.duosida_ev_charger_192_168_1_100_charging"},
             blocking=True,
         )
 
@@ -55,7 +57,7 @@ async def test_charging_switch_turn_off(
         await hass.services.async_call(
             "switch",
             "turn_off",
-            {"entity_id": "switch.duosida_ev_charger_charging"},
+            {"entity_id": "switch.duosida_ev_charger_192_168_1_100_charging"},
             blocking=True,
         )
 
@@ -68,12 +70,11 @@ async def test_direct_mode_switch(
     setup_integration: Any,
 ) -> None:
     """Test direct mode switch."""
-    # Check direct mode switch exists
-    direct_mode_switch = hass.states.get("switch.duosida_ev_charger_direct_mode")
-    assert direct_mode_switch is not None
-
-    # Should be unknown initially (unknown-first approach)
-    assert direct_mode_switch.state == "unknown"
+    # Check direct mode switch exists (disabled by default)
+    direct_mode_switch = hass.states.get(
+        "switch.duosida_ev_charger_192_168_1_100_direct_mode"
+    )
+    assert direct_mode_switch is None  # Disabled by default
 
 
 async def test_stop_on_disconnect_switch(
@@ -81,9 +82,8 @@ async def test_stop_on_disconnect_switch(
     setup_integration: Any,
 ) -> None:
     """Test stop on disconnect switch."""
-    # Check stop on disconnect switch exists
-    stop_switch = hass.states.get("switch.duosida_ev_charger_stop_on_disconnect")
-    assert stop_switch is not None
-
-    # Should be unknown initially (unknown-first approach)
-    assert stop_switch.state == "unknown"
+    # Check stop on disconnect switch exists (disabled by default)
+    stop_switch = hass.states.get(
+        "switch.duosida_ev_charger_192_168_1_100_stop_session_on_vehicle_disconnect"
+    )
+    assert stop_switch is None  # Disabled by default

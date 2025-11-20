@@ -10,14 +10,15 @@
 
 | Tier | Status | Progress |
 |------|--------|----------|
-| 🥉 Bronze | 🔄 Active | 90% (test refinement at 33%, infra complete) |
+| 🥉 Bronze | 🔄 Active | 92% (test refinement at 61%, infra complete) |
 | 🥈 Silver | ⏳ Partial | 40% (error recovery needed) |
 | 🥇 Gold | ⏳ Partial | 70% (options flow needed) |
 | 🏆 Platinum | ⏳ Partial | 60% (optimization pending) |
 
 **Major Achievements:**
-- ✅ 46 comprehensive test cases (15/46 passing, up from 1/46)
-- ✅ Test infrastructure 100% complete with proper fixtures
+- ✅ 46 comprehensive test cases (28/46 passing = 61%, up from 2%!)
+- ✅ Test infrastructure 100% complete with proper fixtures and mocking
+- ✅ All entity tests passing (button, number, switch: 14/14)
 - ✅ 20 language translations
 - ✅ 100% type hints coverage
 - ✅ All code quality checks passing
@@ -145,20 +146,24 @@
 ### 🥉 Bronze Tier - Minor Items
 
 - [x] **Test Infrastructure Complete** ✅
-  - 46 comprehensive tests created
+  - 46 comprehensive tests created (28 passing, 18 need refinement)
   - Complete fixture refactoring with proper mocking
   - MockDuosidaCharger fully implemented with all methods
   - setup_integration fixture for proper HA integration loading
 
-- [ ] **Test Refinement - In Progress** (33% complete - 15/46 passing)
+- [ ] **Test Refinement - In Progress** (61% complete - 28/46 passing)
   - ✅ Test infrastructure: 100% complete and well-organized
   - ✅ Fixture consolidation: All mocks properly configured
   - ✅ Integration loading: Fixed with proper mock Integration object
-  - ✅ Progress: Improved from 1/46 → **15/46 tests passing** (+1400%)
-  - ✅ Setup errors: Reduced from 25 → 4 errors (-84%)
-  - ⏳ Entity creation: 31 tests need async platform loading fixes
-  - ⏳ Coordinator tests: 4 errors need investigation
-  - **Status:** Major infrastructure work complete, refinement continues
+  - ✅ Entity ID corrections: All test assertions updated for IP-based entity IDs
+  - ✅ Progress: Improved from 1/46 → **28/46 tests passing** (+2700%!)
+  - ✅ Entity tests: **14/14 passing** (button, number, switch: 100%)
+  - ✅ Sensor tests: **5/7 passing** (71%)
+  - ⏳ Config flow tests: 0/7 need fixing (integration loading issues)
+  - ⏳ Coordinator tests: 8/14 passing (6 failures remain)
+  - ⏳ Init tests: 1/4 passing (3 failures remain)
+  - ⏳ Cleanup: 25 lingering timer warnings (non-blocking)
+  - **Status:** Major progress! All entity platforms working, refinement continues
 
 - [ ] **Documentation Expansion**
   - [ ] README: Add troubleshooting section

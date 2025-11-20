@@ -251,6 +251,7 @@ async def setup_integration(
     hass: HomeAssistant,
     mock_config_entry: MockConfigEntry,
     mock_duosida_charger: MagicMock,
+    request: pytest.FixtureRequest,
 ) -> MockConfigEntry:
     """Set up the integration with mocked charger."""
     from pathlib import Path
@@ -292,22 +293,47 @@ async def setup_integration(
         # For other domains, call the real function
         return await real_async_get_integration(hass_instance, domain)
 
-    with (
-        patch(
-            "custom_components.duosida_ev.coordinator.Store.async_load",
-            return_value=None,
-        ),
-        patch(
-            "custom_components.duosida_ev.coordinator.Store.async_save",
-            return_value=None,
-        ),
-        patch(
-            "homeassistant.loader.async_get_integration",
-            side_effect=mock_get_integration,
-        ),
-    ):
-        # Call setup directly instead of using hass.config_entries.async_setup
-        assert await async_setup_entry(hass, mock_config_entry)
-        await hass.async_block_till_done()
+    # Apply patches that will persist for the test
+    patch_store_load = patch(
+        "custom_components.duosida_ev.coordinator.Store.async_load",
+        return_value=None,
+    )
+    patch_store_save = patch(
+        "custom_components.duosida_ev.coordinator.Store.async_save",
+        return_value=None,
+    )
+    # Patch async_get_integration at multiple import locations
+    patch_get_integration_1 = patch(
+        "homeassistant.loader.async_get_integration",
+        side_effect=mock_get_integration,
+    )
+    patch_get_integration_2 = patch(
+        "homeassistant.requirements.async_get_integration",
+        side_effect=mock_get_integration,
+    )
 
-    return mock_config_entry
+    # Start all patches
+    patch_store_load.start()
+    patch_store_save.start()
+    patch_get_integration_1.start()
+    patch_get_integration_2.start()
+
+    # Call setup directly instead of using hass.config_entries.async_setup
+    assert await async_setup_entry(hass, mock_config_entry)
+    await hass.async_block_till_done()
+
+    # Yield the entry for the test to use
+    yield mock_config_entry
+
+    # Cleanup after test
+    from custom_components.duosida_ev import async_unload_entry
+
+    # Unload the entry to stop coordinator refresh tasks
+    await async_unload_entry(hass, mock_config_entry)
+    await hass.async_block_till_done()
+
+    # Stop all patches
+    patch_store_load.stop()
+    patch_store_save.stop()
+    patch_get_integration_1.stop()
+    patch_get_integration_2.stop()
