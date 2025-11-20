@@ -2,21 +2,18 @@
 
 from __future__ import annotations
 
-from datetime import timedelta
-from unittest.mock import AsyncMock, MagicMock, patch
+from typing import Any
+from unittest.mock import MagicMock, patch
 
 import pytest
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import UpdateFailed
-from homeassistant.util import dt as dt_util
 
 from custom_components.duosida_ev.coordinator import DuosidaDataUpdateCoordinator
 
-from .conftest import MOCK_CHARGER_STATUS, MockDuosidaCharger
-
 
 @pytest.fixture
-def coordinator(hass: HomeAssistant, mock_charger) -> DuosidaDataUpdateCoordinator:
+def coordinator(hass: HomeAssistant, mock_charger: Any) -> DuosidaDataUpdateCoordinator:
     """Return a coordinator instance."""
     return DuosidaDataUpdateCoordinator(
         hass,
@@ -125,7 +122,6 @@ async def test_coordinator_energy_integration(
     await coordinator.async_config_entry_first_refresh()
 
     # Get initial data
-    initial_total_energy = coordinator.data.get("total_energy", 0.0)
 
     # Simulate time passing and another update with power consumption
     with patch("homeassistant.core.HomeAssistant.loop") as mock_loop:

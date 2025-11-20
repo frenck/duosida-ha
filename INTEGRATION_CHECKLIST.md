@@ -10,15 +10,16 @@
 
 | Tier | Status | Progress |
 |------|--------|----------|
-| 🥉 Bronze | 🔄 Active | 92% (test refinement at 61%, infra complete) |
+| 🥉 Bronze | 🔄 Active | 95% (test refinement at 80%, infra complete) |
 | 🥈 Silver | ⏳ Partial | 40% (error recovery needed) |
 | 🥇 Gold | ⏳ Partial | 70% (options flow needed) |
 | 🏆 Platinum | ⏳ Partial | 60% (optimization pending) |
 
 **Major Achievements:**
-- ✅ 46 comprehensive test cases (28/46 passing = 61%, up from 2%!)
+- ✅ 46 comprehensive test cases (37/46 passing = 80%, up from 61%!)
 - ✅ Test infrastructure 100% complete with proper fixtures and mocking
-- ✅ All entity tests passing (button, number, switch: 14/14)
+- ✅ All entity tests passing (button, number, switch, sensor: 21/21)
+- ✅ All config flow tests passing (7/7) with duplicate detection
 - ✅ 20 language translations
 - ✅ 100% type hints coverage
 - ✅ All code quality checks passing
@@ -36,7 +37,7 @@
   - Auto-discovery via UDP broadcast
   - Manual configuration with validation
   - Error handling for connection failures
-  - Duplicate device prevention
+  - ✅ Duplicate device prevention (unique_id checking)
 
 - [x] **Manifest.json** - All required fields complete
   - ✅ domain: `duosida_ev`
@@ -91,25 +92,25 @@
   - ✅ **pre-commit hooks**: Automated quality checks
 
 #### Testing
-- [x] **Unit Tests** - Comprehensive test infrastructure (46 tests)
-  - ✅ **tests/conftest.py** - Fixtures and MockDuosidaCharger (244 lines)
-  - ✅ **test_init.py** - Setup/unload tests (4 tests)
-  - ✅ **test_config_flow.py** - Config flow tests (7 tests)
+- [x] **Unit Tests** - Comprehensive test infrastructure (46 tests, 37 passing)
+  - ✅ **tests/conftest.py** - Fixtures and MockDuosidaCharger (293 lines)
+  - ⏳ **test_init.py** - Setup/unload tests (4 tests, 1 passing)
+  - ✅ **test_config_flow.py** - Config flow tests (7/7 passing)
     - Manual configuration success/failure
     - Auto-discovery with/without devices
-    - Duplicate device handling
+    - Duplicate device handling (unique_id checking)
     - Default values
-  - ✅ **test_coordinator.py** - Data fetching tests (14 tests)
+  - ⏳ **test_coordinator.py** - Data fetching tests (14 tests, 8 passing)
     - All command methods
     - Energy integration
     - Settings persistence
     - Unknown-first approach
-  - ✅ **test_sensor.py** - Sensor entity tests (7 tests)
-  - ✅ **test_switch.py** - Switch entity tests (5 tests)
-  - ✅ **test_number.py** - Number entity tests (5 tests)
-  - ✅ **test_button.py** - Button entity tests (4 tests)
+  - ✅ **test_sensor.py** - Sensor entity tests (7/7 passing)
+  - ✅ **test_switch.py** - Switch entity tests (5/5 passing)
+  - ✅ **test_number.py** - Number entity tests (5/5 passing)
+  - ✅ **test_button.py** - Button entity tests (4/4 passing)
   - ✅ Pytest configured with asyncio support
-  - ⏳ Test refinement for 100% pass rate (foundation solid)
+  - ⏳ Test refinement at 80% (37/46 passing, 9 remaining)
 
 #### Translations
 - [x] **20 Language Translations** - Exceptional coverage!
@@ -151,19 +152,18 @@
   - MockDuosidaCharger fully implemented with all methods
   - setup_integration fixture for proper HA integration loading
 
-- [ ] **Test Refinement - In Progress** (61% complete - 28/46 passing)
+- [ ] **Test Refinement - In Progress** (80% complete - 37/46 passing)
   - ✅ Test infrastructure: 100% complete and well-organized
   - ✅ Fixture consolidation: All mocks properly configured
   - ✅ Integration loading: Fixed with proper mock Integration object
   - ✅ Entity ID corrections: All test assertions updated for IP-based entity IDs
-  - ✅ Progress: Improved from 1/46 → **28/46 tests passing** (+2700%!)
-  - ✅ Entity tests: **14/14 passing** (button, number, switch: 100%)
-  - ✅ Sensor tests: **5/7 passing** (71%)
-  - ⏳ Config flow tests: 0/7 need fixing (integration loading issues)
+  - ✅ Progress: Improved from 28/46 → **37/46 tests passing** (+32%)
+  - ✅ Entity tests: **21/21 passing** (button, number, switch, sensor: 100%)
+  - ✅ Config flow tests: **7/7 passing** (100%) - with duplicate detection
   - ⏳ Coordinator tests: 8/14 passing (6 failures remain)
   - ⏳ Init tests: 1/4 passing (3 failures remain)
-  - ⏳ Cleanup: 25 lingering timer warnings (non-blocking)
-  - **Status:** Major progress! All entity platforms working, refinement continues
+  - ⏳ Cleanup: 27 lingering timer warnings (non-blocking)
+  - **Status:** Excellent progress! All entity and config flow tests passing
 
 - [ ] **Documentation Expansion**
   - [ ] README: Add troubleshooting section
@@ -256,12 +256,14 @@
 
 ### 🔴 Critical (Blocking Bronze Certification)
 
-1. **Test Refinement - IN PROGRESS** (0.5-1 day remaining)
+1. **Test Refinement - IN PROGRESS** (0.25-0.5 day remaining)
    - ✅ Test infrastructure completely refactored
    - ✅ All fixtures properly configured and mocked
-   - ✅ Progress: 1/46 → 15/46 tests passing (+1400%)
-   - ⏳ Fix async platform loading for entity tests (31 tests)
-   - ⏳ Fix remaining coordinator test errors (4 tests)
+   - ✅ Progress: 28/46 → 37/46 tests passing (+32%)
+   - ✅ All entity tests passing (21/21)
+   - ✅ All config flow tests passing (7/7)
+   - ⏳ Fix remaining coordinator tests (6 failures)
+   - ⏳ Fix remaining init tests (3 failures)
    - Verify with `pytest tests/ -v`
 
 2. **Documentation** (1 day)
@@ -387,7 +389,7 @@ When ready to submit to Home Assistant:
 **Quality Metrics:**
 - Type coverage: 100%
 - Code quality: All checks passing
-- Test pass rate: 33% (15/46 tests passing, up from 2%)
+- Test pass rate: 80% (37/46 tests passing, up from 61%)
 - Test infrastructure: 100% complete
 - Translation coverage: 20 languages
 
@@ -412,22 +414,24 @@ When ready to submit to Home Assistant:
 
 ## 🎯 Conclusion
 
-**Current Achievement:** 🥉 **Bronze Tier Active Development** (90% complete)
+**Current Achievement:** 🥉 **Bronze Tier Active Development** (95% complete)
 
 The integration has a **solid foundation** with:
 - ✅ Comprehensive test infrastructure (46 tests, 100% complete)
-- ✅ Test refinement: 15/46 passing (33%, up from 2%)
+- ✅ Test refinement: 37/46 passing (80%, up from 61%)
+- ✅ All entity and config flow tests passing (28/28 = 100%)
 - ✅ All fixtures properly mocked and organized
+- ✅ Duplicate device detection in config flow
 - ✅ Exceptional translation coverage (20 languages)
 - ✅ Complete type hints
 - ✅ All code quality checks passing
 - ✅ Pre-commit hooks for quality assurance
 
 **Recent Progress:**
-- **Test infrastructure:** Completely refactored with proper HA integration loading
-- **Test improvements:** 1/46 → 15/46 passing (+1400% improvement)
-- **Setup errors:** 25 → 4 (-84% reduction)
-- **Mock completeness:** MockDuosidaCharger fully implemented
+- **Test improvements:** 28/46 → 37/46 passing (+32% improvement)
+- **Config flow:** All 7 tests passing with duplicate detection
+- **Sensor tests:** All 7 tests passing (temperature field, state_class fixes)
+- **Entity platforms:** 100% passing (21/21 tests)
 
 **Path to Submission:**
 1. **1-2 days**: Complete test refinement + docs → Bronze certified
@@ -441,4 +445,4 @@ The integration has a **solid foundation** with:
 
 ---
 
-**Status:** Active test refinement phase - major infrastructure work complete! 🚀
+**Status:** Test refinement at 80% - all entity and config flow tests passing! 🚀

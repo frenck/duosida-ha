@@ -16,6 +16,7 @@ async def test_setup_entry(
     hass: HomeAssistant,
     mock_config_entry: Any,
     mock_duosida_charger: Any,
+    mock_integration: Any,
 ) -> None:
     """Test setting up a config entry."""
     mock_config_entry.add_to_hass(hass)
@@ -47,6 +48,7 @@ async def test_setup_entry_connection_error(
     hass: HomeAssistant,
     mock_config_entry: Any,
     mock_duosida_charger: Any,
+    mock_integration: Any,
 ) -> None:
     """Test setup entry fails when connection to charger fails."""
     mock_config_entry.add_to_hass(hass)
@@ -70,6 +72,7 @@ async def test_unload_entry(
     hass: HomeAssistant,
     mock_config_entry: Any,
     mock_duosida_charger: Any,
+    mock_integration: Any,
 ) -> None:
     """Test unloading a config entry."""
     mock_config_entry.add_to_hass(hass)

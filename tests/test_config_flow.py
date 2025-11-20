@@ -24,6 +24,7 @@ from .conftest import MOCK_DISCOVERED_CHARGER  # noqa: F401
 async def test_user_step_no_discovery(
     hass: HomeAssistant,
     mock_duosida_charger: Any,
+    mock_integration: Any,
 ) -> None:
     """Test user step without choosing discovery."""
     result = await hass.config_entries.flow.async_init(
@@ -36,7 +37,7 @@ async def test_user_step_no_discovery(
     # User chooses manual configuration (not selecting discovery checkbox)
     result = await hass.config_entries.flow.async_configure(
         result["flow_id"],
-        user_input={},
+        user_input={"discovery": False},
     )
 
     assert result["type"] == FlowResultType.FORM
@@ -46,6 +47,7 @@ async def test_user_step_no_discovery(
 async def test_manual_step_success(
     hass: HomeAssistant,
     mock_duosida_charger: Any,
+    mock_integration: Any,
 ) -> None:
     """Test manual configuration step completes successfully."""
     # Start the flow
@@ -56,7 +58,7 @@ async def test_manual_step_success(
     # Go to manual step
     result = await hass.config_entries.flow.async_configure(
         result["flow_id"],
-        user_input={},
+        user_input={"discovery": False},
     )
 
     assert result["type"] == FlowResultType.FORM
@@ -78,7 +80,7 @@ async def test_manual_step_success(
         )
 
     assert result["type"] == FlowResultType.CREATE_ENTRY
-    assert result["title"] == "Duosida EV Charger"
+    assert result["title"] == "Duosida 192.168.1.100"
     assert result["data"] == {
         CONF_HOST: "192.168.1.100",
         CONF_PORT: 9988,
@@ -89,6 +91,7 @@ async def test_manual_step_success(
 
 async def test_manual_step_connection_error(
     hass: HomeAssistant,
+    mock_integration: Any,
 ) -> None:
     """Test manual configuration with connection error."""
     # Start the flow
@@ -99,7 +102,7 @@ async def test_manual_step_connection_error(
     # Go to manual step
     result = await hass.config_entries.flow.async_configure(
         result["flow_id"],
-        user_input={},
+        user_input={"discovery": False},
     )
 
     # Try to configure with a charger that fails to connect
@@ -127,6 +130,7 @@ async def test_discovery_step_chargers_found(
     hass: HomeAssistant,
     mock_discover_chargers: Any,
     mock_duosida_charger: Any,
+    mock_integration: Any,
 ) -> None:
     """Test discovery step when chargers are found."""
     # Start the flow
@@ -152,12 +156,12 @@ async def test_discovery_step_chargers_found(
         result = await hass.config_entries.flow.async_configure(
             result["flow_id"],
             user_input={
-                "device": "192.168.1.100 (03123456789012345678)",
+                "device": "192.168.1.100",
             },
         )
 
     assert result["type"] == FlowResultType.CREATE_ENTRY
-    assert result["title"] == "Duosida EV Charger"
+    assert result["title"] == "Duosida 192.168.1.100"
     assert result["data"][CONF_HOST] == "192.168.1.100"
     assert result["data"][CONF_DEVICE_ID] == "03123456789012345678"
 
@@ -165,6 +169,7 @@ async def test_discovery_step_chargers_found(
 async def test_discovery_step_no_chargers_found(
     hass: HomeAssistant,
     mock_duosida_charger: Any,
+    mock_integration: Any,
 ) -> None:
     """Test discovery step when no chargers are found."""
     # Start the flow
@@ -190,6 +195,7 @@ async def test_already_configured(
     hass: HomeAssistant,
     mock_config_entry: Any,
     mock_duosida_charger: Any,
+    mock_integration: Any,
 ) -> None:
     """Test we abort if the device is already configured."""
     mock_config_entry.add_to_hass(hass)
@@ -202,7 +208,7 @@ async def test_already_configured(
     # Go to manual step
     result = await hass.config_entries.flow.async_configure(
         result["flow_id"],
-        user_input={},
+        user_input={"discovery": False},
     )
 
     # Try to configure the same device
@@ -223,6 +229,7 @@ async def test_already_configured(
 async def test_manual_defaults(
     hass: HomeAssistant,
     mock_duosida_charger: Any,
+    mock_integration: Any,
 ) -> None:
     """Test manual configuration uses defaults."""
     # Start the flow
@@ -233,7 +240,7 @@ async def test_manual_defaults(
     # Go to manual step
     result = await hass.config_entries.flow.async_configure(
         result["flow_id"],
-        user_input={},
+        user_input={"discovery": False},
     )
 
     # Configure without specifying port and scan_interval (should use defaults)

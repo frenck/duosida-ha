@@ -85,7 +85,8 @@ async def test_sensor_session_energy(
         session_energy_sensor.attributes["unit_of_measurement"]
         == UnitOfEnergy.KILO_WATT_HOUR
     )
-    assert session_energy_sensor.attributes["state_class"] == "measurement"
+    # Session energy is cumulative within a session, so it's total_increasing
+    assert session_energy_sensor.attributes["state_class"] == "total_increasing"
 
 
 async def test_sensor_session_time(

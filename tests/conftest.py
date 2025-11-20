@@ -3,13 +3,16 @@
 from __future__ import annotations
 
 from collections.abc import Generator
-from typing import Any
+from typing import TYPE_CHECKING, Any
 from unittest.mock import MagicMock, patch
 
 import pytest
 from homeassistant.const import CONF_HOST, CONF_PORT
 from homeassistant.core import HomeAssistant
 from pytest_homeassistant_custom_component.common import MockConfigEntry
+
+if TYPE_CHECKING:
+    from homeassistant.loader import Integration
 
 from custom_components.duosida_ev.const import (
     CONF_DEVICE_ID,
@@ -33,7 +36,7 @@ MOCK_CHARGER_STATUS = {
     "current_l2": 16.0,
     "current_l3": 16.0,
     "power": 11040,  # 3 * 230V * 16A
-    "temperature": 35.0,  # 35°C
+    "temperature_station": 35.0,  # 35°C - charger station temperature
     "session_energy": 5.5,  # 5.5 kWh this session
     "session_time": 120,  # 120 minutes = 2 hours
     "model": "SmartChargePI",
@@ -244,6 +247,52 @@ def mock_config_entry():
         entry_id="test_entry_id",
         unique_id="03123456789012345678",
     )
+
+
+@pytest.fixture
+def mock_integration(hass: HomeAssistant) -> Generator[Integration, None, None]:
+    """Mock the integration manifest for tests that need it without full setup."""
+    from pathlib import Path
+
+    from homeassistant import loader
+    from homeassistant.loader import Integration
+
+    integration_dir = Path(__file__).parent.parent / "custom_components" / "duosida_ev"
+    mock_int = Integration(
+        hass,
+        "custom_components.duosida_ev",
+        integration_dir,
+        {
+            "domain": "duosida_ev",
+            "name": "Duosida EV Charger",
+            "version": "1.0.0",
+            "documentation": "https://github.com/americodias/duosida-ha",
+            "issue_tracker": "https://github.com/americodias/duosida-ha/issues",
+            "requirements": ["duosida-ev==0.1.2"],
+            "codeowners": ["@americodias"],
+            "iot_class": "local_polling",
+            "integration_type": "device",
+        },
+    )
+
+    real_async_get_integration = loader.async_get_integration
+
+    async def mock_get_integration(hass_instance, domain):
+        if domain == "duosida_ev":
+            return mock_int
+        return await real_async_get_integration(hass_instance, domain)
+
+    with (
+        patch(
+            "homeassistant.loader.async_get_integration",
+            side_effect=mock_get_integration,
+        ),
+        patch(
+            "homeassistant.requirements.async_get_integration",
+            side_effect=mock_get_integration,
+        ),
+    ):
+        yield mock_int
 
 
 @pytest.fixture

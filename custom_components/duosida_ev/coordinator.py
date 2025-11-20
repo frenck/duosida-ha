@@ -33,7 +33,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.storage import Store
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from duosida_ev import DuosidaCharger  # type: ignore[attr-defined]
+from duosida_ev import DuosidaCharger
 
 from .const import DOMAIN
 

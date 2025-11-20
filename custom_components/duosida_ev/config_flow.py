@@ -20,9 +20,9 @@ from typing import Any
 import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.const import CONF_HOST, CONF_PORT
-from homeassistant.data_entry_flow import FlowResult
+from homeassistant.data_entry_flow import AbortFlow, FlowResult
 
-from duosida_ev import DuosidaCharger, discover_chargers  # type: ignore
+from duosida_ev import DuosidaCharger, discover_chargers
 
 from .const import (
     CONF_DEVICE_ID,
@@ -116,6 +116,10 @@ class DuosidaLocalConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):  # type:
             # Find the full device info
             for device in self._discovered_devices:
                 if device["ip"] == selected:
+                    # Check if this device is already configured
+                    await self.async_set_unique_id(device["device_id"])
+                    self._abort_if_unique_id_configured()
+
                     # Create the config entry
                     # This saves the configuration and finishes the flow
                     return self.async_create_entry(
@@ -228,6 +232,10 @@ class DuosidaLocalConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):  # type:
                     await self.hass.async_add_executor_job(charger.disconnect)
 
                     if not errors:
+                        # Check if this device is already configured
+                        await self.async_set_unique_id(device_id)
+                        self._abort_if_unique_id_configured()
+
                         # All good - create the config entry
                         return self.async_create_entry(
                             title=f"Duosida {host}",
@@ -241,6 +249,9 @@ class DuosidaLocalConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):  # type:
                             },
                         )
 
+            except AbortFlow:
+                # Re-raise abort flow to let it complete the abort
+                raise
             except Exception as e:
                 _LOGGER.error("Error connecting to charger: %s", e)
                 errors["base"] = "cannot_connect"
