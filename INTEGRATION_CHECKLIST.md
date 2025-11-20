@@ -52,7 +52,7 @@ Checklist for submitting `duosida_ev` as an official Home Assistant integration.
   - [x] Run `black` formatter - All files formatted
   - [x] Run `isort` import sorter - All imports sorted
   - [x] Create `pyproject.toml` configuration
-  - [ ] Add pre-commit hooks
+  - [x] Add pre-commit hooks - `.pre-commit-config.yaml` configured
 - [x] **Missing Translations**
   - [x] Add `total_energy` sensor to translations
   - [x] Add `max_voltage` and `min_voltage` numbers to translations
