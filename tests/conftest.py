@@ -155,31 +155,6 @@ class MockDuosidaCharger:
             return False
         return True
 
-    def get_max_current(self) -> int:
-        """Mock get_max_current."""
-        if not self._connected:
-            raise ConnectionError("Not connected")
-        current = self._status.get("current", 16)
-        return int(current) if isinstance(current, (int, float)) else 16
-
-    def get_led_brightness(self) -> int:
-        """Mock get_led_brightness."""
-        if not self._connected:
-            raise ConnectionError("Not connected")
-        return 3  # Default value
-
-    def get_direct_mode(self) -> bool:
-        """Mock get_direct_mode."""
-        if not self._connected:
-            raise ConnectionError("Not connected")
-        return False  # Default value
-
-    def get_stop_on_disconnect(self) -> bool:
-        """Mock get_stop_on_disconnect."""
-        if not self._connected:
-            raise ConnectionError("Not connected")
-        return False  # Default value
-
 
 @pytest.fixture
 def mock_charger() -> MockDuosidaCharger:
@@ -268,7 +243,7 @@ def mock_integration(hass: HomeAssistant) -> Generator[Integration, None, None]:
             "version": "1.0.0",
             "documentation": "https://github.com/americodias/duosida-ha",
             "issue_tracker": "https://github.com/americodias/duosida-ha/issues",
-            "requirements": ["duosida-ev==0.1.2"],
+            "requirements": ["duosida-ev==0.1.3"],
             "codeowners": ["@americodias"],
             "iot_class": "local_polling",
             "integration_type": "device",
@@ -323,7 +298,7 @@ async def setup_integration(
             "version": "1.0.0",
             "documentation": "https://github.com/americodias/duosida-ha",
             "issue_tracker": "https://github.com/americodias/duosida-ha/issues",
-            "requirements": ["duosida-ev==0.1.2"],
+            "requirements": ["duosida-ev==0.1.3"],
             "codeowners": ["@americodias"],
             "iot_class": "local_polling",
             "integration_type": "device",

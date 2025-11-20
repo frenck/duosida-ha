@@ -83,11 +83,14 @@ class DuosidaMaxCurrentNumber(DuosidaEntity, NumberEntity):
         """
         Return the current max current setting.
 
-        This reads the value from the charger status.
+        Reads from coordinator's stored settings because the charger
+        doesn't report this value.
+
+        Returns None if the user hasn't set this value yet, indicating
+        the state is unknown. This prevents the integration from making
+        assumptions about the charger's configuration.
         """
-        if not self.coordinator.data:
-            return None
-        return self.coordinator.data.get("max_current")
+        return self.coordinator.get_stored_setting("max_current")
 
     async def async_set_native_value(self, value: float) -> None:
         """

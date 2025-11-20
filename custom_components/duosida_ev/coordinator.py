@@ -103,6 +103,7 @@ class DuosidaDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         # Initially None because we don't know the charger's actual configuration
         # Values are only stored when the user explicitly changes them in HA
         self._stored_settings: dict[str, Any] = {
+            "max_current": None,  # Unknown until user sets it
             "led_brightness": None,  # Unknown until user sets it
             "direct_mode": None,  # Unknown until user sets it
             "stop_on_disconnect": None,  # Unknown until user sets it
@@ -155,6 +156,14 @@ class DuosidaDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         know what the charger's actual configuration is.
         """
         settings_to_sync = []
+
+        # Sync max charging current (only if user has set it)
+        max_current = self._stored_settings.get("max_current")
+        if max_current is not None:
+            settings_to_sync.append(f"max current: {max_current}A")
+            await self.hass.async_add_executor_job(
+                self.charger.set_max_current, max_current
+            )
 
         # Sync LED brightness (only if user has set it)
         led_brightness = self._stored_settings.get("led_brightness")
@@ -274,11 +283,6 @@ class DuosidaDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                     data.get("current", 0),
                     data.get("power", 0),
                 )
-
-                # Add max_current from cached value (not part of telemetry)
-                max_current = self.charger.get_max_current()
-                if max_current is not None:
-                    data["max_current"] = max_current
 
                 # Integrate power over time to calculate total energy
                 # This creates an always-increasing energy meter for HA Energy Dashboard
@@ -432,6 +436,10 @@ class DuosidaDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         )
 
         if result:
+            # Persist the setting
+            self._stored_settings["max_current"] = current
+            await self._async_save_stored_settings()
+
             import asyncio
 
             await asyncio.sleep(0.5)
