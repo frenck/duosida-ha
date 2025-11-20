@@ -30,6 +30,12 @@ venv/
 ENV/
 env/
 .venv
+.venv/
+
+# Type checking and linting
+.mypy_cache/
+.ruff_cache/
+.tox/
 
 # IDE
 .vscode/

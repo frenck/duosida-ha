@@ -14,6 +14,7 @@ These are alternatives to the charging switch, useful for:
 - Scripts
 - Dashboard buttons
 """
+
 from __future__ import annotations
 
 from homeassistant.components.button import ButtonEntity
@@ -37,11 +38,13 @@ async def async_setup_entry(
     ]
     device_id = entry.data[CONF_DEVICE_ID]
 
-    async_add_entities([
-        DuosidaStartButton(coordinator, device_id),
-        DuosidaStopButton(coordinator, device_id),
-        DuosidaResetEnergyButton(coordinator, device_id),
-    ])
+    async_add_entities(
+        [
+            DuosidaStartButton(coordinator, device_id),
+            DuosidaStopButton(coordinator, device_id),
+            DuosidaResetEnergyButton(coordinator, device_id),
+        ]
+    )
 
 
 class DuosidaStartButton(DuosidaEntity, ButtonEntity):

@@ -11,31 +11,31 @@ It guides the user through:
 Home Assistant automatically shows this flow when the user clicks
 "Add Integration" and selects "Duosida EV Charger (Local)".
 """
+
 from __future__ import annotations
 
 import logging
 from typing import Any
 
 import voluptuous as vol
-
+from duosida_ev import DuosidaCharger  # type: ignore[attr-defined]
+from duosida_ev import discover_chargers  # type: ignore[attr-defined]
 from homeassistant import config_entries
 from homeassistant.const import CONF_HOST, CONF_PORT
 from homeassistant.data_entry_flow import FlowResult
 
-from duosida_ev import DuosidaCharger, discover_chargers
-
 from .const import (
-    DOMAIN,
     CONF_DEVICE_ID,
     CONF_SCAN_INTERVAL,
     DEFAULT_PORT,
     DEFAULT_SCAN_INTERVAL,
+    DOMAIN,
 )
 
 _LOGGER = logging.getLogger(__name__)
 
 
-class DuosidaLocalConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
+class DuosidaLocalConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):  # type: ignore[call-arg]
     """
     Handle a config flow for Duosida Local.
 
@@ -67,8 +67,6 @@ class DuosidaLocalConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         Returns:
             FlowResult: Either show form or proceed to next step
         """
-        errors: dict[str, str] = {}
-
         if user_input is not None:
             # User submitted the form
             if user_input.get("discovery"):

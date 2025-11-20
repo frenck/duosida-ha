@@ -11,6 +11,7 @@ It provides common functionality:
 By inheriting from this base class, all entities (sensors, switches, etc.)
 automatically get proper device grouping in Home Assistant.
 """
+
 from __future__ import annotations
 
 from homeassistant.helpers.device_registry import DeviceInfo
@@ -77,14 +78,11 @@ class DuosidaEntity(CoordinatorEntity[DuosidaDataUpdateCoordinator]):
             # Unique identifier for this device
             # Uses a set of tuples: {(domain, id)}
             identifiers={(DOMAIN, self._device_id)},
-
             # Display name for the device
             name=f"{NAME} {self.coordinator.charger.host}",
-
             # Device metadata from charger response
             manufacturer=data.get("manufacturer") or "Duosida",
             model=data.get("model") or "SmartChargePI",
-
             # Firmware version from charger data
             sw_version=data.get("firmware"),
         )

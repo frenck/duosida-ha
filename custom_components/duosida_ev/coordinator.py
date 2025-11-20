@@ -21,17 +21,17 @@ How it works:
 4. We fetch status from the charger
 5. All entities automatically get notified and update their state
 """
+
 from __future__ import annotations
 
 import logging
 from datetime import timedelta
 from typing import Any
 
+from duosida_ev import DuosidaCharger  # type: ignore[attr-defined]
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.storage import Store
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
-
-from duosida_ev import DuosidaCharger
 
 from .const import DOMAIN
 
@@ -101,14 +101,14 @@ class DuosidaDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         # Initially None because we don't know the charger's actual configuration
         # Values are only stored when the user explicitly changes them in HA
         self._stored_settings: dict[str, Any] = {
-            "led_brightness": None,        # Unknown until user sets it
-            "direct_mode": None,           # Unknown until user sets it
-            "stop_on_disconnect": None,    # Unknown until user sets it
-            "max_voltage": None,           # Unknown until user sets it
-            "min_voltage": None,           # Unknown until user sets it
-            "total_energy": 0.0,           # Total energy consumed (kWh) - integrated from power
-            "last_power": 0.0,             # Last power reading (W) for integration
-            "last_update_time": None,      # Last update timestamp for integration
+            "led_brightness": None,  # Unknown until user sets it
+            "direct_mode": None,  # Unknown until user sets it
+            "stop_on_disconnect": None,  # Unknown until user sets it
+            "max_voltage": None,  # Unknown until user sets it
+            "min_voltage": None,  # Unknown until user sets it
+            "total_energy": 0.0,  # Total energy consumed (kWh) - integrated from power
+            "last_power": 0.0,  # Last power reading (W) for integration
+            "last_update_time": None,  # Last update timestamp for integration
         }
 
         # Flag to track if we've synced user settings on first connection after HA restart
@@ -195,9 +195,14 @@ class DuosidaDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             )
 
         if settings_to_sync:
-            _LOGGER.info("Synced user-configured settings to charger: %s", ", ".join(settings_to_sync))
+            _LOGGER.info(
+                "Synced user-configured settings to charger: %s",
+                ", ".join(settings_to_sync),
+            )
         else:
-            _LOGGER.info("No user-configured settings to sync (charger retains its current configuration)")
+            _LOGGER.info(
+                "No user-configured settings to sync (charger retains its current configuration)"
+            )
 
     def get_stored_setting(self, key: str) -> Any:
         """
@@ -232,9 +237,7 @@ class DuosidaDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             # Connect to charger
             _LOGGER.debug("Connecting to charger at %s", self.charger.host)
 
-            connected = await self.hass.async_add_executor_job(
-                self.charger.connect
-            )
+            connected = await self.hass.async_add_executor_job(self.charger.connect)
 
             if not connected:
                 raise UpdateFailed("Failed to connect to charger")
@@ -242,6 +245,7 @@ class DuosidaDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             try:
                 # Small delay after connect - charger needs time to be ready
                 import asyncio
+
                 await asyncio.sleep(0.3)
                 _LOGGER.debug("Connection ready, starting data fetch")
 
@@ -266,7 +270,7 @@ class DuosidaDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                     data.get("state"),
                     data.get("voltage", 0),
                     data.get("current", 0),
-                    data.get("power", 0)
+                    data.get("power", 0),
                 )
 
                 # Add max_current from cached value (not part of telemetry)
@@ -289,14 +293,20 @@ class DuosidaDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 if last_time is not None and current_time > last_time:
                     time_delta_hours = (current_time - last_time) / 3600.0
                     average_power = (current_power + last_power) / 2.0
-                    energy_delta = (average_power * time_delta_hours) / 1000.0  # Convert W to kW
+                    energy_delta = (
+                        average_power * time_delta_hours
+                    ) / 1000.0  # Convert W to kW
 
                     # Only add positive energy (ignore negative spikes from bad readings)
-                    if energy_delta > 0 and energy_delta < 100:  # Sanity check: < 100 kWh per interval
+                    if (
+                        energy_delta > 0 and energy_delta < 100
+                    ):  # Sanity check: < 100 kWh per interval
                         total_energy += energy_delta
                         _LOGGER.debug(
                             "Energy integration: %.3f kWh (avg power: %.1f W, time: %.3f h)",
-                            energy_delta, average_power, time_delta_hours
+                            energy_delta,
+                            average_power,
+                            time_delta_hours,
                         )
 
                 # Update stored state
@@ -346,6 +356,7 @@ class DuosidaDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             try:
                 # Small delay after connect - charger needs time to be ready
                 import asyncio
+
                 await asyncio.sleep(0.3)
 
                 # Send command
@@ -373,6 +384,7 @@ class DuosidaDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         if result:
             # Wait for charger to update state, then refresh
             import asyncio
+
             await asyncio.sleep(1.0)
             await self.async_request_refresh()
 
@@ -392,6 +404,7 @@ class DuosidaDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         if result:
             # Wait for charger to update state, then refresh
             import asyncio
+
             await asyncio.sleep(1.0)
             await self.async_request_refresh()
 
@@ -408,13 +421,15 @@ class DuosidaDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             True if command was sent successfully
         """
         from functools import partial
+
         result = await self._async_send_command(
             partial(self.charger.set_max_current, current),
-            f"set max current to {current}A"
+            f"set max current to {current}A",
         )
 
         if result:
             import asyncio
+
             await asyncio.sleep(0.5)
             await self.async_request_refresh()
 
@@ -431,9 +446,10 @@ class DuosidaDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             True if command was sent successfully
         """
         from functools import partial
+
         result = await self._async_send_command(
             partial(self.charger.set_led_brightness, level),
-            f"set LED brightness to {level}"
+            f"set LED brightness to {level}",
         )
 
         if result:
@@ -457,10 +473,11 @@ class DuosidaDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             True if command was sent successfully
         """
         from functools import partial
+
         state = "enabled" if enabled else "disabled"
         result = await self._async_send_command(
             partial(self.charger.set_direct_work_mode, enabled),
-            f"set direct mode to {state}"
+            f"set direct mode to {state}",
         )
 
         if result:
@@ -484,10 +501,11 @@ class DuosidaDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             True if command was sent successfully
         """
         from functools import partial
+
         state = "enabled" if enabled else "disabled"
         result = await self._async_send_command(
             partial(self.charger.set_stop_on_disconnect, enabled),
-            f"set stop on disconnect to {state}"
+            f"set stop on disconnect to {state}",
         )
 
         if result:
@@ -510,9 +528,10 @@ class DuosidaDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             True if command was sent successfully
         """
         from functools import partial
+
         result = await self._async_send_command(
             partial(self.charger.set_max_voltage, voltage),
-            f"set max voltage to {voltage}V"
+            f"set max voltage to {voltage}V",
         )
 
         if result:
@@ -535,9 +554,10 @@ class DuosidaDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             True if command was sent successfully
         """
         from functools import partial
+
         result = await self._async_send_command(
             partial(self.charger.set_min_voltage, voltage),
-            f"set min voltage to {voltage}V"
+            f"set min voltage to {voltage}V",
         )
 
         if result:

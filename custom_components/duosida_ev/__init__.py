@@ -9,15 +9,15 @@ Key concepts:
 - Platform: A type of entity (sensor, switch, button, etc.)
 - Coordinator: Manages data fetching and updates all entities
 """
+
 from __future__ import annotations
 
 import logging
 
+from duosida_ev import DuosidaCharger  # type: ignore[attr-defined]
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST, CONF_PORT, Platform
 from homeassistant.core import HomeAssistant
-
-from duosida_ev import DuosidaCharger
 
 from .const import (
     CONF_DEVICE_ID,
@@ -33,10 +33,10 @@ _LOGGER = logging.getLogger(__name__)
 # Define which platforms (entity types) this integration provides
 # Each platform has its own file (sensor.py, switch.py, etc.)
 PLATFORMS: list[Platform] = [
-    Platform.SENSOR,   # Read-only values (voltage, current, etc.)
-    Platform.SWITCH,   # On/off controls (charging, direct mode)
-    Platform.NUMBER,   # Numeric controls (max current, LED brightness)
-    Platform.BUTTON,   # Action triggers (start/stop buttons)
+    Platform.SENSOR,  # Read-only values (voltage, current, etc.)
+    Platform.SWITCH,  # On/off controls (charging, direct mode)
+    Platform.NUMBER,  # Numeric controls (max current, LED brightness)
+    Platform.BUTTON,  # Action triggers (start/stop buttons)
 ]
 
 
@@ -68,8 +68,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     scan_interval = entry.data.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
 
     _LOGGER.debug(
-        "Setting up Duosida charger at %s:%s (device_id: %s)",
-        host, port, device_id
+        "Setting up Duosida charger at %s:%s (device_id: %s)", host, port, device_id
     )
 
     # Create the charger instance from our library

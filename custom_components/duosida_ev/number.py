@@ -10,6 +10,7 @@ This integration provides:
 3. Max Voltage - Set maximum working voltage (265-290V)
 4. Min Voltage - Set minimum working voltage (70-110V)
 """
+
 from __future__ import annotations
 
 from homeassistant.components.number import NumberEntity, NumberMode
@@ -34,12 +35,14 @@ async def async_setup_entry(
     ]
     device_id = entry.data[CONF_DEVICE_ID]
 
-    async_add_entities([
-        DuosidaMaxCurrentNumber(coordinator, device_id),
-        DuosidaLedBrightnessNumber(coordinator, device_id),
-        DuosidaMaxVoltageNumber(coordinator, device_id),
-        DuosidaMinVoltageNumber(coordinator, device_id),
-    ])
+    async_add_entities(
+        [
+            DuosidaMaxCurrentNumber(coordinator, device_id),
+            DuosidaLedBrightnessNumber(coordinator, device_id),
+            DuosidaMaxVoltageNumber(coordinator, device_id),
+            DuosidaMinVoltageNumber(coordinator, device_id),
+        ]
+    )
 
 
 class DuosidaMaxCurrentNumber(DuosidaEntity, NumberEntity):
@@ -60,9 +63,9 @@ class DuosidaMaxCurrentNumber(DuosidaEntity, NumberEntity):
     _attr_icon = "mdi:current-ac"
 
     # Number range settings
-    _attr_native_min_value = 6      # Minimum 6 amps
-    _attr_native_max_value = 32     # Maximum 32 amps
-    _attr_native_step = 1           # 1 amp increments
+    _attr_native_min_value = 6  # Minimum 6 amps
+    _attr_native_max_value = 32  # Maximum 32 amps
+    _attr_native_step = 1  # 1 amp increments
     _attr_native_unit_of_measurement = UnitOfElectricCurrent.AMPERE
     _attr_mode = NumberMode.SLIDER  # Show as slider in UI
 

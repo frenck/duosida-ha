@@ -8,6 +8,7 @@ This integration provides two switches:
 1. Charging Switch - Start/stop charging
 2. Direct Mode Switch - Enable/disable plug-and-charge mode
 """
+
 from __future__ import annotations
 
 from typing import Any
@@ -40,11 +41,13 @@ async def async_setup_entry(
     ]
     device_id = entry.data[CONF_DEVICE_ID]
 
-    async_add_entities([
-        DuosidaChargingSwitch(coordinator, device_id),
-        DuosidaDirectModeSwitch(coordinator, device_id),
-        DuosidaStopOnDisconnectSwitch(coordinator, device_id),
-    ])
+    async_add_entities(
+        [
+            DuosidaChargingSwitch(coordinator, device_id),
+            DuosidaDirectModeSwitch(coordinator, device_id),
+            DuosidaStopOnDisconnectSwitch(coordinator, device_id),
+        ]
+    )
 
 
 class DuosidaChargingSwitch(DuosidaEntity, SwitchEntity):

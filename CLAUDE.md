@@ -220,6 +220,53 @@ CP_STATE_CODES = {
 
 ## Development
 
+### Development Environment Setup
+
+**Virtual Environment:**
+This project uses a local Python virtual environment for development.
+
+```bash
+# Create virtual environment using uv
+uv venv
+
+# Activate the virtual environment
+source .venv/bin/activate  # On macOS/Linux
+# or
+.venv\Scripts\activate  # On Windows
+
+# Install development dependencies
+uv pip install ruff black isort mypy pytest pytest-homeassistant-custom-component
+
+# Install the duosida-ev library
+uv pip install duosida-ev==0.1.2
+```
+
+**Code Quality Tools:**
+- **ruff**: Fast Python linter (replaces flake8, pylint, etc.)
+- **black**: Code formatter
+- **isort**: Import sorter
+- **mypy**: Static type checker
+- **pytest**: Testing framework
+
+**Running Code Quality Checks:**
+```bash
+# Activate virtual environment first
+source .venv/bin/activate
+
+# Run all checks
+ruff check custom_components/duosida_ev/
+black --check custom_components/duosida_ev/
+isort --check-only custom_components/duosida_ev/
+mypy custom_components/duosida_ev/
+
+# Auto-fix issues
+black custom_components/duosida_ev/
+isort custom_components/duosida_ev/
+ruff check --fix custom_components/duosida_ev/
+```
+
+**Important:** Always use the virtual environment when working on this project to keep dependencies isolated.
+
 ### Testing Locally
 
 1. Copy `custom_components/duosida_ev` to your HA config

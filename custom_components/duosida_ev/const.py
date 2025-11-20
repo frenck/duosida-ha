@@ -7,6 +7,7 @@ Keeping constants in one place makes them easy to find and update.
 Types used:
 - Final: Indicates the value should never be changed
 """
+
 from typing import Final
 
 # =============================================================================
@@ -52,12 +53,11 @@ DEFAULT_SCAN_INTERVAL: Final = 10
 # These come from the conn_status field in charger status
 # Source: Official Duosida Home Assistant integration
 STATUS_CODES: Final = {
-    0: "Available",     # Charger is ready, no vehicle connected
-    1: "Preparing",     # Vehicle connected, preparing to charge
-    2: "Charging",      # Actively charging
-    3: "Cooling",       # Cooling down after charging
-    4: "SuspendedEV",   # Charging suspended by vehicle
-    5: "Finished",      # Charging complete
-    6: "Holiday",       # Holiday mode (scheduled off)
+    0: "Available",  # Charger is ready, no vehicle connected
+    1: "Preparing",  # Vehicle connected, preparing to charge
+    2: "Charging",  # Actively charging
+    3: "Cooling",  # Cooling down after charging
+    4: "SuspendedEV",  # Charging suspended by vehicle
+    5: "Finished",  # Charging complete
+    6: "Holiday",  # Holiday mode (scheduled off)
 }
-
