@@ -99,3 +99,4 @@ norecursedirs = [
     ".git",
     ".venv",
 ]
+asyncio_mode = "auto"
