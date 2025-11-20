@@ -19,6 +19,7 @@ from typing import Any
 
 from homeassistant import config_entries
 from homeassistant.const import CONF_HOST, CONF_PORT
+from homeassistant.core import callback
 from homeassistant.data_entry_flow import AbortFlow, FlowResult
 import voluptuous as vol
 
@@ -51,6 +52,25 @@ class DuosidaLocalConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):  # type:
         """Initialize the config flow."""
         # Store discovered devices between steps
         self._discovered_devices: list[dict[str, Any]] = []
+
+    @staticmethod
+    @callback
+    def async_get_options_flow(
+        config_entry: config_entries.ConfigEntry,
+    ) -> OptionsFlowHandler:
+        """
+        Get the options flow handler for this integration.
+
+        This allows users to reconfigure the integration without removing it.
+        Currently supports changing the scan interval.
+
+        Args:
+            config_entry: The config entry to create options flow for
+
+        Returns:
+            OptionsFlowHandler: The options flow handler
+        """
+        return OptionsFlowHandler(config_entry)
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
@@ -274,4 +294,69 @@ class DuosidaLocalConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):  # type:
                 }
             ),
             errors=errors,
+        )
+
+
+class OptionsFlowHandler(config_entries.OptionsFlow):
+    """
+    Handle options flow for Duosida EV Charger.
+
+    This allows users to reconfigure the integration settings
+    without removing and re-adding the integration.
+
+    Currently supports:
+    - Scan interval (how often to poll the charger)
+    """
+
+    def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
+        """
+        Initialize options flow.
+
+        Args:
+            config_entry: The config entry being configured
+        """
+        self.config_entry = config_entry
+
+    async def async_step_init(
+        self, user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
+        """
+        Manage the options.
+
+        This is the main (and only) step of the options flow.
+        It shows a form with configurable settings.
+
+        Args:
+            user_input: Form data if submitted, None on first display
+
+        Returns:
+            FlowResult: Either show form or save options
+        """
+        if user_input is not None:
+            # User submitted the form - save the options
+            # Options are stored separately from the main config
+            # and can be accessed via config_entry.options
+            return self.async_create_entry(title="", data=user_input)
+
+        # Get current settings
+        # First check options (user-configured), then fall back to data (initial config)
+        current_scan_interval = self.config_entry.options.get(
+            CONF_SCAN_INTERVAL,
+            self.config_entry.data.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL),
+        )
+
+        # Show the options form
+        return self.async_show_form(
+            step_id="init",
+            data_schema=vol.Schema(
+                {
+                    vol.Optional(
+                        CONF_SCAN_INTERVAL,
+                        default=current_scan_interval,
+                    ): vol.All(int, vol.Range(min=5, max=300)),
+                }
+            ),
+            description_placeholders={
+                "current_interval": str(current_scan_interval),
+            },
         )

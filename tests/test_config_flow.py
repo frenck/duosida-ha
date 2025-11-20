@@ -260,3 +260,57 @@ async def test_manual_defaults(
     # Verify defaults were used
     assert result["data"][CONF_PORT] == DEFAULT_PORT
     assert result["data"][CONF_SCAN_INTERVAL] == DEFAULT_SCAN_INTERVAL
+
+
+async def test_options_flow(
+    hass: HomeAssistant,
+    mock_config_entry: Any,
+    mock_integration: Any,
+) -> None:
+    """Test options flow."""
+    mock_config_entry.add_to_hass(hass)
+
+    # Open options flow
+    result = await hass.config_entries.options.async_init(mock_config_entry.entry_id)
+
+    assert result["type"] == FlowResultType.FORM
+    assert result["step_id"] == "init"
+
+    # Change scan interval to 20 seconds
+    result = await hass.config_entries.options.async_configure(
+        result["flow_id"],
+        user_input={CONF_SCAN_INTERVAL: 20},
+    )
+
+    assert result["type"] == FlowResultType.CREATE_ENTRY
+    assert result["data"] == {CONF_SCAN_INTERVAL: 20}
+
+
+async def test_options_flow_custom_value(
+    hass: HomeAssistant,
+    mock_config_entry: Any,
+    mock_integration: Any,
+) -> None:
+    """Test options flow with existing custom value."""
+    # Add entry to hass first
+    mock_config_entry.add_to_hass(hass)
+
+    # Set custom scan interval in options
+    hass.config_entries.async_update_entry(
+        mock_config_entry, options={CONF_SCAN_INTERVAL: 15}
+    )
+
+    # Open options flow
+    result = await hass.config_entries.options.async_init(mock_config_entry.entry_id)
+
+    assert result["type"] == FlowResultType.FORM
+    assert result["step_id"] == "init"
+
+    # Change to 30 seconds
+    result = await hass.config_entries.options.async_configure(
+        result["flow_id"],
+        user_input={CONF_SCAN_INTERVAL: 30},
+    )
+
+    assert result["type"] == FlowResultType.CREATE_ENTRY
+    assert result["data"] == {CONF_SCAN_INTERVAL: 30}

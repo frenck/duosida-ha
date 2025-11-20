@@ -66,7 +66,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     host = entry.data[CONF_HOST]
     port = entry.data.get(CONF_PORT, 9988)
     device_id = entry.data[CONF_DEVICE_ID]
-    scan_interval = entry.data.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
+
+    # Get scan_interval from options (if user configured) or data (initial config)
+    # Options allow users to reconfigure without removing the integration
+    scan_interval = entry.options.get(
+        CONF_SCAN_INTERVAL,
+        entry.data.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL),
+    )
 
     _LOGGER.debug(
         "Setting up Duosida charger at %s:%s (device_id: %s)", host, port, device_id
@@ -114,8 +120,27 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     # This calls async_setup_entry() in each platform file
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
+    # Register options update listener
+    # This allows the integration to respond when user changes options
+    entry.async_on_unload(entry.add_update_listener(async_update_options))
+
     _LOGGER.info("Duosida charger at %s set up successfully", host)
     return True
+
+
+async def async_update_options(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    """
+    Update options.
+
+    This function is called when the user changes options via the UI.
+    We reload the entire integration to apply the new settings.
+
+    Args:
+        hass: The Home Assistant instance
+        entry: The configuration entry that was updated
+    """
+    _LOGGER.debug("Options updated, reloading integration")
+    await hass.config_entries.async_reload(entry.entry_id)
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
