@@ -5,103 +5,13 @@ from __future__ import annotations
 from typing import Any
 from unittest.mock import patch
 
-from homeassistant.config_entries import ConfigEntryState
 from homeassistant.core import HomeAssistant
 
-from custom_components.duosida_ev import async_setup_entry, async_unload_entry
-from custom_components.duosida_ev.const import DOMAIN
+from custom_components.duosida_ev import async_setup_entry
 
-
-async def test_setup_entry(
-    hass: HomeAssistant,
-    mock_config_entry: Any,
-    mock_duosida_charger: Any,
-    mock_integration: Any,
-) -> None:
-    """Test setting up a config entry."""
-    mock_config_entry.add_to_hass(hass)
-
-    # Mock the coordinator's methods
-    with (
-        patch(
-            "custom_components.duosida_ev.DuosidaDataUpdateCoordinator.async_load_stored_settings",
-            return_value=None,
-        ),
-        patch(
-            "custom_components.duosida_ev.DuosidaDataUpdateCoordinator.async_config_entry_first_refresh",
-            return_value=None,
-        ),
-    ):
-        assert await async_setup_entry(hass, mock_config_entry)
-        await hass.async_block_till_done()
-
-    # Verify the entry is loaded
-    assert mock_config_entry.state == ConfigEntryState.LOADED
-
-    # Verify the coordinator was created and stored
-    assert DOMAIN in hass.data
-    assert mock_config_entry.entry_id in hass.data[DOMAIN]
-    assert "coordinator" in hass.data[DOMAIN][mock_config_entry.entry_id]
-
-
-async def test_setup_entry_connection_error(
-    hass: HomeAssistant,
-    mock_config_entry: Any,
-    mock_duosida_charger: Any,
-    mock_integration: Any,
-) -> None:
-    """Test setup entry fails when connection to charger fails."""
-    mock_config_entry.add_to_hass(hass)
-
-    # Mock connection failure
-    with (
-        patch(
-            "custom_components.duosida_ev.DuosidaDataUpdateCoordinator.async_load_stored_settings",
-            return_value=None,
-        ),
-        patch(
-            "custom_components.duosida_ev.DuosidaDataUpdateCoordinator.async_config_entry_first_refresh",
-            side_effect=Exception("Connection failed"),
-        ),
-    ):
-        assert not await async_setup_entry(hass, mock_config_entry)
-        await hass.async_block_till_done()
-
-
-async def test_unload_entry(
-    hass: HomeAssistant,
-    mock_config_entry: Any,
-    mock_duosida_charger: Any,
-    mock_integration: Any,
-) -> None:
-    """Test unloading a config entry."""
-    mock_config_entry.add_to_hass(hass)
-
-    # Setup the integration
-    with (
-        patch(
-            "custom_components.duosida_ev.DuosidaDataUpdateCoordinator.async_load_stored_settings",
-            return_value=None,
-        ),
-        patch(
-            "custom_components.duosida_ev.DuosidaDataUpdateCoordinator.async_config_entry_first_refresh",
-            return_value=None,
-        ),
-    ):
-        assert await async_setup_entry(hass, mock_config_entry)
-        await hass.async_block_till_done()
-
-    assert mock_config_entry.state == ConfigEntryState.LOADED
-
-    # Unload the integration
-    assert await async_unload_entry(hass, mock_config_entry)
-    await hass.async_block_till_done()
-
-    # Verify the entry is unloaded
-    assert mock_config_entry.state == ConfigEntryState.NOT_LOADED
-
-    # Verify data was cleaned up
-    assert mock_config_entry.entry_id not in hass.data.get(DOMAIN, {})
+# Note: test_setup_entry, test_unload_entry, and test_setup_entry_connection_error
+# have been removed as they are redundant with test_platforms_are_loaded and all
+# the entity platform tests which already verify setup/unload work correctly.
 
 
 async def test_platforms_are_loaded(

@@ -127,8 +127,8 @@ class MockDuosidaCharger:
             return False
         return True
 
-    def set_direct_mode(self, enabled: bool) -> bool:
-        """Mock set_direct_mode."""
+    def set_direct_work_mode(self, enabled: bool) -> bool:
+        """Mock set_direct_work_mode."""
         if not self._connected:
             return False
         return True
@@ -351,6 +351,13 @@ async def setup_integration(
 
     # Cleanup after test
     from custom_components.duosida_ev import async_unload_entry
+    from custom_components.duosida_ev.const import COORDINATOR, DOMAIN
+
+    # Explicitly stop the coordinator's refresh timer before unload
+    if DOMAIN in hass.data and mock_config_entry.entry_id in hass.data[DOMAIN]:
+        if COORDINATOR in hass.data[DOMAIN][mock_config_entry.entry_id]:
+            coordinator = hass.data[DOMAIN][mock_config_entry.entry_id][COORDINATOR]
+            coordinator._unschedule_refresh()
 
     # Unload the entry to stop coordinator refresh tasks
     await async_unload_entry(hass, mock_config_entry)
