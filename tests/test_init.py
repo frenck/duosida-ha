@@ -2,33 +2,34 @@
 
 from __future__ import annotations
 
-from unittest.mock import AsyncMock, MagicMock, patch
+from typing import Any
+from unittest.mock import patch
 
-import pytest
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.core import HomeAssistant
 
 from custom_components.duosida_ev import async_setup_entry, async_unload_entry
 from custom_components.duosida_ev.const import DOMAIN
 
-from .conftest import MOCK_CONFIG_ENTRY_DATA
-
 
 async def test_setup_entry(
     hass: HomeAssistant,
-    mock_config_entry,
-    mock_duosida_charger,
+    mock_config_entry: Any,
+    mock_duosida_charger: Any,
 ) -> None:
     """Test setting up a config entry."""
     mock_config_entry.add_to_hass(hass)
 
     # Mock the coordinator's methods
-    with patch(
-        "custom_components.duosida_ev.DuosidaDataUpdateCoordinator.async_load_stored_settings",
-        return_value=None,
-    ), patch(
-        "custom_components.duosida_ev.DuosidaDataUpdateCoordinator.async_config_entry_first_refresh",
-        return_value=None,
+    with (
+        patch(
+            "custom_components.duosida_ev.DuosidaDataUpdateCoordinator.async_load_stored_settings",
+            return_value=None,
+        ),
+        patch(
+            "custom_components.duosida_ev.DuosidaDataUpdateCoordinator.async_config_entry_first_refresh",
+            return_value=None,
+        ),
     ):
         assert await async_setup_entry(hass, mock_config_entry)
         await hass.async_block_till_done()
@@ -44,19 +45,22 @@ async def test_setup_entry(
 
 async def test_setup_entry_connection_error(
     hass: HomeAssistant,
-    mock_config_entry,
-    mock_duosida_charger,
+    mock_config_entry: Any,
+    mock_duosida_charger: Any,
 ) -> None:
     """Test setup entry fails when connection to charger fails."""
     mock_config_entry.add_to_hass(hass)
 
     # Mock connection failure
-    with patch(
-        "custom_components.duosida_ev.DuosidaDataUpdateCoordinator.async_load_stored_settings",
-        return_value=None,
-    ), patch(
-        "custom_components.duosida_ev.DuosidaDataUpdateCoordinator.async_config_entry_first_refresh",
-        side_effect=Exception("Connection failed"),
+    with (
+        patch(
+            "custom_components.duosida_ev.DuosidaDataUpdateCoordinator.async_load_stored_settings",
+            return_value=None,
+        ),
+        patch(
+            "custom_components.duosida_ev.DuosidaDataUpdateCoordinator.async_config_entry_first_refresh",
+            side_effect=Exception("Connection failed"),
+        ),
     ):
         assert not await async_setup_entry(hass, mock_config_entry)
         await hass.async_block_till_done()
@@ -64,19 +68,22 @@ async def test_setup_entry_connection_error(
 
 async def test_unload_entry(
     hass: HomeAssistant,
-    mock_config_entry,
-    mock_duosida_charger,
+    mock_config_entry: Any,
+    mock_duosida_charger: Any,
 ) -> None:
     """Test unloading a config entry."""
     mock_config_entry.add_to_hass(hass)
 
     # Setup the integration
-    with patch(
-        "custom_components.duosida_ev.DuosidaDataUpdateCoordinator.async_load_stored_settings",
-        return_value=None,
-    ), patch(
-        "custom_components.duosida_ev.DuosidaDataUpdateCoordinator.async_config_entry_first_refresh",
-        return_value=None,
+    with (
+        patch(
+            "custom_components.duosida_ev.DuosidaDataUpdateCoordinator.async_load_stored_settings",
+            return_value=None,
+        ),
+        patch(
+            "custom_components.duosida_ev.DuosidaDataUpdateCoordinator.async_config_entry_first_refresh",
+            return_value=None,
+        ),
     ):
         assert await async_setup_entry(hass, mock_config_entry)
         await hass.async_block_till_done()
@@ -96,22 +103,26 @@ async def test_unload_entry(
 
 async def test_platforms_are_loaded(
     hass: HomeAssistant,
-    mock_config_entry,
-    mock_duosida_charger,
+    mock_config_entry: Any,
+    mock_duosida_charger: Any,
 ) -> None:
     """Test that all platforms are loaded."""
     mock_config_entry.add_to_hass(hass)
 
-    with patch(
-        "custom_components.duosida_ev.DuosidaDataUpdateCoordinator.async_load_stored_settings",
-        return_value=None,
-    ), patch(
-        "custom_components.duosida_ev.DuosidaDataUpdateCoordinator.async_config_entry_first_refresh",
-        return_value=None,
-    ), patch(
-        "homeassistant.config_entries.ConfigEntries.async_forward_entry_setups",
-        return_value=None,
-    ) as mock_forward:
+    with (
+        patch(
+            "custom_components.duosida_ev.DuosidaDataUpdateCoordinator.async_load_stored_settings",
+            return_value=None,
+        ),
+        patch(
+            "custom_components.duosida_ev.DuosidaDataUpdateCoordinator.async_config_entry_first_refresh",
+            return_value=None,
+        ),
+        patch(
+            "homeassistant.config_entries.ConfigEntries.async_forward_entry_setups",
+            return_value=None,
+        ) as mock_forward,
+    ):
         assert await async_setup_entry(hass, mock_config_entry)
         await hass.async_block_till_done()
 

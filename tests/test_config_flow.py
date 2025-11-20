@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
+from typing import Any
 from unittest.mock import patch
 
-import pytest
 from homeassistant import config_entries
 from homeassistant.const import CONF_HOST, CONF_PORT
 from homeassistant.core import HomeAssistant
@@ -18,12 +18,12 @@ from custom_components.duosida_ev.const import (
     DOMAIN,
 )
 
-from .conftest import MOCK_CONFIG_ENTRY_DATA, MOCK_DISCOVERED_CHARGER
+from .conftest import MOCK_DISCOVERED_CHARGER  # noqa: F401
 
 
 async def test_user_step_no_discovery(
     hass: HomeAssistant,
-    mock_duosida_charger_in_config_flow,
+    mock_duosida_charger: Any,
 ) -> None:
     """Test user step without choosing discovery."""
     result = await hass.config_entries.flow.async_init(
@@ -45,7 +45,7 @@ async def test_user_step_no_discovery(
 
 async def test_manual_step_success(
     hass: HomeAssistant,
-    mock_duosida_charger_in_config_flow,
+    mock_duosida_charger: Any,
 ) -> None:
     """Test manual configuration step completes successfully."""
     # Start the flow
@@ -125,8 +125,8 @@ async def test_manual_step_connection_error(
 
 async def test_discovery_step_chargers_found(
     hass: HomeAssistant,
-    mock_discover_chargers,
-    mock_duosida_charger_in_config_flow,
+    mock_discover_chargers: Any,
+    mock_duosida_charger: Any,
 ) -> None:
     """Test discovery step when chargers are found."""
     # Start the flow
@@ -164,7 +164,7 @@ async def test_discovery_step_chargers_found(
 
 async def test_discovery_step_no_chargers_found(
     hass: HomeAssistant,
-    mock_duosida_charger_in_config_flow,
+    mock_duosida_charger: Any,
 ) -> None:
     """Test discovery step when no chargers are found."""
     # Start the flow
@@ -188,8 +188,8 @@ async def test_discovery_step_no_chargers_found(
 
 async def test_already_configured(
     hass: HomeAssistant,
-    mock_config_entry,
-    mock_duosida_charger_in_config_flow,
+    mock_config_entry: Any,
+    mock_duosida_charger: Any,
 ) -> None:
     """Test we abort if the device is already configured."""
     mock_config_entry.add_to_hass(hass)
@@ -222,7 +222,7 @@ async def test_already_configured(
 
 async def test_manual_defaults(
     hass: HomeAssistant,
-    mock_duosida_charger_in_config_flow,
+    mock_duosida_charger: Any,
 ) -> None:
     """Test manual configuration uses defaults."""
     # Start the flow

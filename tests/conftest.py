@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 from collections.abc import Generator
-from unittest.mock import AsyncMock, MagicMock, patch
+from typing import Any
+from unittest.mock import MagicMock, patch
 
 import pytest
 from homeassistant.const import CONF_HOST, CONF_PORT
 from homeassistant.core import HomeAssistant
+from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.duosida_ev.const import (
     CONF_DEVICE_ID,
@@ -85,7 +87,7 @@ class MockDuosidaCharger:
             raise ConnectionError("Not connected")
         return self  # Return self so to_dict() can be called on the result
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Mock to_dict."""
         if not self._connected:
             raise ConnectionError("Not connected")
@@ -150,6 +152,31 @@ class MockDuosidaCharger:
             return False
         return True
 
+    def get_max_current(self) -> int:
+        """Mock get_max_current."""
+        if not self._connected:
+            raise ConnectionError("Not connected")
+        current = self._status.get("current", 16)
+        return int(current) if isinstance(current, (int, float)) else 16
+
+    def get_led_brightness(self) -> int:
+        """Mock get_led_brightness."""
+        if not self._connected:
+            raise ConnectionError("Not connected")
+        return 3  # Default value
+
+    def get_direct_mode(self) -> bool:
+        """Mock get_direct_mode."""
+        if not self._connected:
+            raise ConnectionError("Not connected")
+        return False  # Default value
+
+    def get_stop_on_disconnect(self) -> bool:
+        """Mock get_stop_on_disconnect."""
+        if not self._connected:
+            raise ConnectionError("Not connected")
+        return False  # Default value
+
 
 @pytest.fixture
 def mock_charger() -> MockDuosidaCharger:
@@ -164,42 +191,32 @@ def mock_charger() -> MockDuosidaCharger:
 @pytest.fixture
 def mock_duosida_charger() -> Generator[MagicMock, None, None]:
     """Mock the DuosidaCharger class."""
-    with patch(
-        "custom_components.duosida_ev.DuosidaCharger",
-        return_value=MockDuosidaCharger(
-            host="192.168.1.100",
-            port=9988,
-            device_id="03123456789012345678",
+    with (
+        patch(
+            "custom_components.duosida_ev.DuosidaCharger",
+            return_value=MockDuosidaCharger(
+                host="192.168.1.100",
+                port=9988,
+                device_id="03123456789012345678",
+            ),
+        ) as mock,
+        patch(
+            "custom_components.duosida_ev.coordinator.DuosidaCharger",
+            return_value=MockDuosidaCharger(
+                host="192.168.1.100",
+                port=9988,
+                device_id="03123456789012345678",
+            ),
         ),
-    ) as mock:
-        yield mock
-
-
-@pytest.fixture
-def mock_duosida_charger_in_coordinator() -> Generator[MagicMock, None, None]:
-    """Mock the DuosidaCharger class in coordinator."""
-    with patch(
-        "custom_components.duosida_ev.coordinator.DuosidaCharger",
-        return_value=MockDuosidaCharger(
-            host="192.168.1.100",
-            port=9988,
-            device_id="03123456789012345678",
+        patch(
+            "custom_components.duosida_ev.config_flow.DuosidaCharger",
+            return_value=MockDuosidaCharger(
+                host="192.168.1.100",
+                port=9988,
+                device_id="03123456789012345678",
+            ),
         ),
-    ) as mock:
-        yield mock
-
-
-@pytest.fixture
-def mock_duosida_charger_in_config_flow() -> Generator[MagicMock, None, None]:
-    """Mock the DuosidaCharger class in config flow."""
-    with patch(
-        "custom_components.duosida_ev.config_flow.DuosidaCharger",
-        return_value=MockDuosidaCharger(
-            host="192.168.1.100",
-            port=9988,
-            device_id="03123456789012345678",
-        ),
-    ) as mock:
+    ):
         yield mock
 
 
@@ -209,16 +226,6 @@ def mock_discover_chargers() -> Generator[MagicMock, None, None]:
     with patch(
         "custom_components.duosida_ev.config_flow.discover_chargers",
         return_value=[MOCK_DISCOVERED_CHARGER],
-    ) as mock:
-        yield mock
-
-
-@pytest.fixture
-def mock_setup_entry() -> Generator[AsyncMock, None, None]:
-    """Mock setup entry."""
-    with patch(
-        "custom_components.duosida_ev.async_setup_entry",
-        return_value=True,
     ) as mock:
         yield mock
 
@@ -237,3 +244,70 @@ def mock_config_entry():
         entry_id="test_entry_id",
         unique_id="03123456789012345678",
     )
+
+
+@pytest.fixture
+async def setup_integration(
+    hass: HomeAssistant,
+    mock_config_entry: MockConfigEntry,
+    mock_duosida_charger: MagicMock,
+) -> MockConfigEntry:
+    """Set up the integration with mocked charger."""
+    from pathlib import Path
+
+    from homeassistant.loader import Integration
+
+    from custom_components.duosida_ev import async_setup_entry
+
+    mock_config_entry.add_to_hass(hass)
+
+    # Create a mock integration manifest
+    integration_dir = Path(__file__).parent.parent / "custom_components" / "duosida_ev"
+    mock_integration = Integration(
+        hass,
+        "custom_components.duosida_ev",
+        integration_dir,
+        {
+            "domain": "duosida_ev",
+            "name": "Duosida EV Charger",
+            "version": "1.0.0",
+            "documentation": "https://github.com/americodias/duosida-ha",
+            "issue_tracker": "https://github.com/americodias/duosida-ha/issues",
+            "requirements": ["duosida-ev==0.1.2"],
+            "codeowners": ["@americodias"],
+            "iot_class": "local_polling",
+            "integration_type": "device",
+        },
+    )
+
+    # Mock storage to avoid file system access
+    # Save reference to real function before patching
+    from homeassistant import loader
+
+    real_async_get_integration = loader.async_get_integration
+
+    async def mock_get_integration(hass_instance, domain):
+        if domain == "duosida_ev":
+            return mock_integration
+        # For other domains, call the real function
+        return await real_async_get_integration(hass_instance, domain)
+
+    with (
+        patch(
+            "custom_components.duosida_ev.coordinator.Store.async_load",
+            return_value=None,
+        ),
+        patch(
+            "custom_components.duosida_ev.coordinator.Store.async_save",
+            return_value=None,
+        ),
+        patch(
+            "homeassistant.loader.async_get_integration",
+            side_effect=mock_get_integration,
+        ),
+    ):
+        # Call setup directly instead of using hass.config_entries.async_setup
+        assert await async_setup_entry(hass, mock_config_entry)
+        await hass.async_block_till_done()
+
+    return mock_config_entry
