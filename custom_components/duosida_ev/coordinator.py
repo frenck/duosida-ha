@@ -25,13 +25,15 @@ How it works:
 from __future__ import annotations
 
 import logging
+from collections.abc import Callable
 from datetime import timedelta
 from typing import Any
 
-from duosida_ev import DuosidaCharger  # type: ignore[attr-defined]
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.storage import Store
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+
+from duosida_ev import DuosidaCharger  # type: ignore[attr-defined]
 
 from .const import DOMAIN
 
@@ -333,7 +335,9 @@ class DuosidaDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             _LOGGER.error("Error communicating with charger: %s", err)
             raise UpdateFailed(f"Error communicating with charger: {err}") from err
 
-    async def _async_send_command(self, command_func, command_name: str) -> bool:
+    async def _async_send_command(
+        self, command_func: Callable[[], bool], command_name: str
+    ) -> bool:
         """
         Send a command to the charger with connect/disconnect.
 

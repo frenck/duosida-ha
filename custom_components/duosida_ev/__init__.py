@@ -14,10 +14,11 @@ from __future__ import annotations
 
 import logging
 
-from duosida_ev import DuosidaCharger  # type: ignore[attr-defined]
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST, CONF_PORT, Platform
 from homeassistant.core import HomeAssistant
+
+from duosida_ev import DuosidaCharger  # type: ignore[attr-defined]
 
 from .const import (
     CONF_DEVICE_ID,

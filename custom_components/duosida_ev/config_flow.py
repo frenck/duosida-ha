@@ -18,11 +18,11 @@ import logging
 from typing import Any
 
 import voluptuous as vol
-from duosida_ev import DuosidaCharger  # type: ignore[attr-defined]
-from duosida_ev import discover_chargers  # type: ignore[attr-defined]
 from homeassistant import config_entries
 from homeassistant.const import CONF_HOST, CONF_PORT
 from homeassistant.data_entry_flow import FlowResult
+
+from duosida_ev import DuosidaCharger, discover_chargers  # type: ignore
 
 from .const import (
     CONF_DEVICE_ID,
@@ -50,7 +50,7 @@ class DuosidaLocalConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):  # type:
     def __init__(self) -> None:
         """Initialize the config flow."""
         # Store discovered devices between steps
-        self._discovered_devices: list[dict] = []
+        self._discovered_devices: list[dict[str, Any]] = []
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
