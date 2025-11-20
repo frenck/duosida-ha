@@ -24,9 +24,9 @@ How it works:
 
 from __future__ import annotations
 
-import logging
 from collections.abc import Callable
 from datetime import timedelta
+import logging
 from typing import Any
 
 from homeassistant.core import HomeAssistant

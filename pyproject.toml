@@ -15,7 +15,6 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "black>=25.11.0",
-    "isort>=7.0.0",
     "mypy>=1.18.0",
     "ruff>=0.14.0",
     "pytest>=8.0.0",
@@ -35,14 +34,6 @@ exclude = '''
   | dist
 )/
 '''
-
-[tool.isort]
-profile = "black"
-line_length = 88
-force_sort_within_sections = true
-combine_as_imports = true
-skip_gitignore = true
-src_paths = ["custom_components"]
 
 [tool.mypy]
 python_version = "3.10"
@@ -94,6 +85,11 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]  # unused imports
+
+[tool.ruff.lint.isort]
+known-first-party = ["custom_components"]
+force-sort-within-sections = true
+combine-as-imports = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

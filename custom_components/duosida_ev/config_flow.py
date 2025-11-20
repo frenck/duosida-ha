@@ -17,10 +17,10 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.const import CONF_HOST, CONF_PORT
 from homeassistant.data_entry_flow import AbortFlow, FlowResult
+import voluptuous as vol
 
 from duosida_ev import DuosidaCharger, discover_chargers
 

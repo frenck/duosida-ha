@@ -6,8 +6,8 @@ from collections.abc import AsyncGenerator
 from typing import Any
 from unittest.mock import MagicMock
 
-import pytest
 from homeassistant.core import HomeAssistant
+import pytest
 
 from custom_components.duosida_ev.coordinator import DuosidaDataUpdateCoordinator
 
