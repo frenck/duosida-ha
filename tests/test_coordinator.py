@@ -388,3 +388,135 @@ async def test_coordinator_update_with_retry_recovery(
     # Allow any pending tasks to complete
     await asyncio.sleep(0.1)
     await hass.async_block_till_done()
+
+
+async def test_coordinator_sync_settings_with_stored_values(
+    hass: HomeAssistant,
+    coordinator: DuosidaDataUpdateCoordinator,
+) -> None:
+    """Test coordinator syncs settings when stored values exist."""
+    from unittest.mock import patch
+
+    # Set up stored settings
+    coordinator._stored_settings = {
+        "max_current": 20,
+        "led_brightness": 3,
+        "direct_mode": True,
+        "stop_on_disconnect": True,
+        "max_voltage": 280,
+        "min_voltage": 90,
+        "total_energy": 0.0,
+        "last_power": 0.0,
+        "last_update_time": None,
+    }
+
+    # Mock the charger methods
+    with (
+        patch.object(coordinator.charger, "set_max_current", return_value=True),
+        patch.object(coordinator.charger, "set_led_brightness", return_value=True),
+        patch.object(coordinator.charger, "set_direct_work_mode", return_value=True),
+        patch.object(coordinator.charger, "set_stop_on_disconnect", return_value=True),
+        patch.object(coordinator.charger, "set_max_voltage", return_value=True),
+        patch.object(coordinator.charger, "set_min_voltage", return_value=True),
+    ):
+        # Trigger sync
+        await coordinator._async_sync_settings_to_charger()
+
+        # Verify all methods were called
+        coordinator.charger.set_max_current.assert_called_once_with(20)
+        coordinator.charger.set_led_brightness.assert_called_once_with(3)
+        coordinator.charger.set_direct_work_mode.assert_called_once_with(True)
+        coordinator.charger.set_stop_on_disconnect.assert_called_once_with(True)
+        coordinator.charger.set_max_voltage.assert_called_once_with(280)
+        coordinator.charger.set_min_voltage.assert_called_once_with(90)
+
+
+async def test_coordinator_load_stored_settings_with_data(
+    hass: HomeAssistant,
+    coordinator: DuosidaDataUpdateCoordinator,
+) -> None:
+    """Test loading stored settings when data exists in storage."""
+    from unittest.mock import patch
+
+    stored_data = {
+        "max_current": 25,
+        "led_brightness": 1,
+        "total_energy": 50.5,
+    }
+
+    with patch.object(coordinator._store, "async_load", return_value=stored_data):
+        await coordinator.async_load_stored_settings()
+
+        # Verify settings were loaded
+        assert coordinator._stored_settings["max_current"] == 25
+        assert coordinator._stored_settings["led_brightness"] == 1
+        assert coordinator._stored_settings["total_energy"] == 50.5
+
+
+async def test_coordinator_command_failure_paths(
+    hass: HomeAssistant,
+    coordinator: DuosidaDataUpdateCoordinator,
+) -> None:
+    """Test coordinator handles command failures gracefully."""
+    from unittest.mock import patch
+
+    # Test set_max_current failure
+    with patch.object(coordinator.charger, "set_max_current", return_value=False):
+        result = await coordinator.async_set_max_current(20)
+        assert result is False
+
+    # Test set_led_brightness failure
+    with patch.object(coordinator.charger, "set_led_brightness", return_value=False):
+        result = await coordinator.async_set_led_brightness(3)
+        assert result is False
+
+    # Test set_direct_mode failure
+    with patch.object(coordinator.charger, "set_direct_work_mode", return_value=False):
+        result = await coordinator.async_set_direct_mode(True)
+        assert result is False
+
+    # Test set_stop_on_disconnect failure
+    with patch.object(
+        coordinator.charger, "set_stop_on_disconnect", return_value=False
+    ):
+        result = await coordinator.async_set_stop_on_disconnect(True)
+        assert result is False
+
+    # Test set_max_voltage failure
+    with patch.object(coordinator.charger, "set_max_voltage", return_value=False):
+        result = await coordinator.async_set_max_voltage(280)
+        assert result is False
+
+    # Test set_min_voltage failure
+    with patch.object(coordinator.charger, "set_min_voltage", return_value=False):
+        result = await coordinator.async_set_min_voltage(90)
+        assert result is False
+
+
+async def test_coordinator_command_exceptions(
+    hass: HomeAssistant,
+    coordinator: DuosidaDataUpdateCoordinator,
+) -> None:
+    """Test coordinator handles exceptions in commands."""
+    from unittest.mock import patch
+
+    # Test exception in set_max_current
+    with patch.object(
+        coordinator.charger, "set_max_current", side_effect=Exception("Test error")
+    ):
+        result = await coordinator.async_set_max_current(20)
+        assert result is False
+
+    # Test exception in start_charging
+    with patch.object(
+        coordinator.charger, "start_charging", side_effect=Exception("Test error")
+    ):
+        result = await coordinator.async_start_charging()
+        assert result is False
+
+    # Test exception in stop_charging
+    with patch.object(
+        coordinator.charger, "stop_charging", side_effect=Exception("Test error")
+    ):
+        result = await coordinator.async_stop_charging()
+        assert result is False
