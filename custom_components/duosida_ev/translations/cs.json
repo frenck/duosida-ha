@@ -120,6 +120,27 @@
       "reset_energy": {
         "name": "Resetovat Celkovou Energii"
       }
+    },
+    "binary_sensor": {
+      "charging": {
+        "name": "Nabíjení"
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Možnosti Nabíječky Duosida EV",
+        "description": "Konfigurovat nastavení integrace",
+        "data": {
+          "scan_interval": "Interval aktualizace (sekundy)",
+          "switch_debounce": "Debounce přepínače nabíjení (sekundy)"
+        },
+        "data_description": {
+          "scan_interval": "Jak často se nabíječka dotazuje na aktualizace stavu",
+          "switch_debounce": "Jak dlouho udržovat stav přepínače nabíjení po odeslání příkazu (zabraňuje blikání UI)"
+        }
+      }
     }
   }
 }

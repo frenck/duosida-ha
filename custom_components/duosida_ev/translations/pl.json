@@ -120,6 +120,27 @@
       "reset_energy": {
         "name": "Zresetuj Całkowitą Energię"
       }
+    },
+    "binary_sensor": {
+      "charging": {
+        "name": "Ładowanie"
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Opcje Ładowarki Duosida EV",
+        "description": "Skonfiguruj ustawienia integracji",
+        "data": {
+          "scan_interval": "Interwał aktualizacji (sekundy)",
+          "switch_debounce": "Debounce przełącznika ładowania (sekundy)"
+        },
+        "data_description": {
+          "scan_interval": "Jak często odpytywać ładowarkę o aktualizacje stanu",
+          "switch_debounce": "Jak długo utrzymywać stan przełącznika ładowania po wysłaniu polecenia (zapobiega migotaniu interfejsu)"
+        }
+      }
     }
   }
 }

@@ -13,11 +13,11 @@ async def test_start_charging_button(
     setup_integration: Any,
 ) -> None:
     """Test start charging button."""
-    # Start charging button is disabled by default
+    # Start charging button is enabled by default
     start_button = hass.states.get(
         "button.duosida_ev_charger_192_168_1_100_start_charging"
     )
-    assert start_button is None  # Disabled by default
+    assert start_button is not None
 
 
 async def test_stop_charging_button(
@@ -25,11 +25,11 @@ async def test_stop_charging_button(
     setup_integration: Any,
 ) -> None:
     """Test stop charging button."""
-    # Stop charging button is disabled by default
+    # Stop charging button is enabled by default
     stop_button = hass.states.get(
         "button.duosida_ev_charger_192_168_1_100_stop_charging"
     )
-    assert stop_button is None  # Disabled by default
+    assert stop_button is not None
 
 
 async def test_reset_energy_button(

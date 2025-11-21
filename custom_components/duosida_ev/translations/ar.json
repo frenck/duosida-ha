@@ -120,6 +120,27 @@
       "reset_energy": {
         "name": "إعادة تعيين الطاقة الإجمالية"
       }
+    },
+    "binary_sensor": {
+      "charging": {
+        "name": "الشحن"
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "خيارات شاحن Duosida EV",
+        "description": "تكوين إعدادات التكامل",
+        "data": {
+          "scan_interval": "فترة التحديث (بالثواني)",
+          "switch_debounce": "مقاومة ارتداد مفتاح الشحن (بالثواني)"
+        },
+        "data_description": {
+          "scan_interval": "كم مرة يتم استعلام الشاحن لتحديثات الحالة",
+          "switch_debounce": "مدة الاحتفاظ بحالة مفتاح الشحن بعد إرسال الأمر (يمنع وميض الواجهة)"
+        }
+      }
     }
   }
 }

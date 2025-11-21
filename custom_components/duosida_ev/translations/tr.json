@@ -120,6 +120,27 @@
       "reset_energy": {
         "name": "Toplam Enerjiyi Sıfırla"
       }
+    },
+    "binary_sensor": {
+      "charging": {
+        "name": "Şarj"
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Duosida EV Şarj Cihazı Seçenekleri",
+        "description": "Entegrasyon ayarlarını yapılandır",
+        "data": {
+          "scan_interval": "Güncelleme Aralığı (saniye)",
+          "switch_debounce": "Şarj anahtarı sıçrama önleme (saniye)"
+        },
+        "data_description": {
+          "scan_interval": "Şarj cihazının durum güncellemeleri için ne sıklıkta sorgulanacağı",
+          "switch_debounce": "Komut gönderildikten sonra şarj anahtarı durumunun ne kadar süre tutulacağı (UI titremesini önler)"
+        }
+      }
     }
   }
 }

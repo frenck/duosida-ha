@@ -120,6 +120,27 @@
       "reset_energy": {
         "name": "総エネルギーをリセット"
       }
+    },
+    "binary_sensor": {
+      "charging": {
+        "name": "充電"
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Duosida EV 充電器オプション",
+        "description": "統合設定を構成",
+        "data": {
+          "scan_interval": "更新間隔（秒）",
+          "switch_debounce": "充電スイッチデバウンス（秒）"
+        },
+        "data_description": {
+          "scan_interval": "充電器のステータス更新をポーリングする頻度",
+          "switch_debounce": "コマンド送信後に充電スイッチの状態を保持する時間（UIのちらつきを防止）"
+        }
+      }
     }
   }
 }

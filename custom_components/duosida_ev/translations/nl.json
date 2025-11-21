@@ -120,6 +120,27 @@
       "reset_energy": {
         "name": "Reset Totale Energie"
       }
+    },
+    "binary_sensor": {
+      "charging": {
+        "name": "Opladen"
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Duosida EV Oplader Opties",
+        "description": "Configureer integratie-instellingen",
+        "data": {
+          "scan_interval": "Update-interval (seconden)",
+          "switch_debounce": "Laadschakelaar debounce (seconden)"
+        },
+        "data_description": {
+          "scan_interval": "Hoe vaak de oplader om statusupdates wordt gevraagd",
+          "switch_debounce": "Hoe lang de laadschakelaartoestand wordt vastgehouden na het verzenden van een opdracht (voorkomt UI-flikkering)"
+        }
+      }
     }
   }
 }

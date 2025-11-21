@@ -23,8 +23,10 @@ from duosida_ev import DuosidaCharger
 from .const import (
     CONF_DEVICE_ID,
     CONF_SCAN_INTERVAL,
+    CONF_SWITCH_DEBOUNCE,
     COORDINATOR,
     DEFAULT_SCAN_INTERVAL,
+    DEFAULT_SWITCH_DEBOUNCE,
     DOMAIN,
 )
 from .coordinator import DuosidaDataUpdateCoordinator
@@ -34,8 +36,9 @@ _LOGGER = logging.getLogger(__name__)
 # Define which platforms (entity types) this integration provides
 # Each platform has its own file (sensor.py, switch.py, etc.)
 PLATFORMS: list[Platform] = [
+    Platform.BINARY_SENSOR,  # Read-only on/off states (charging status)
     Platform.SENSOR,  # Read-only values (voltage, current, etc.)
-    Platform.SWITCH,  # On/off controls (charging, direct mode)
+    Platform.SWITCH,  # On/off controls (direct mode, stop on disconnect)
     Platform.NUMBER,  # Numeric controls (max current, LED brightness)
     Platform.BUTTON,  # Action triggers (start/stop buttons)
 ]
@@ -74,6 +77,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         entry.data.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL),
     )
 
+    # Get switch_debounce from options (if user configured) or use default
+    switch_debounce = entry.options.get(
+        CONF_SWITCH_DEBOUNCE,
+        entry.data.get(CONF_SWITCH_DEBOUNCE, DEFAULT_SWITCH_DEBOUNCE),
+    )
+
     _LOGGER.debug(
         "Setting up Duosida charger at %s:%s (device_id: %s)", host, port, device_id
     )
@@ -98,6 +107,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         charger,
         scan_interval,
         device_id,  # Pass device_id for storage key
+        switch_debounce,  # Pass debounce value for charging switch
     )
 
     # Load stored settings (LED brightness, direct mode) before first refresh

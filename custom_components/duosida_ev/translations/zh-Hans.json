@@ -120,6 +120,27 @@
       "reset_energy": {
         "name": "重置总能量"
       }
+    },
+    "binary_sensor": {
+      "charging": {
+        "name": "充电"
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Duosida EV 充电器选项",
+        "description": "配置集成设置",
+        "data": {
+          "scan_interval": "更新间隔（秒）",
+          "switch_debounce": "充电开关防抖（秒）"
+        },
+        "data_description": {
+          "scan_interval": "多久查询一次充电器状态更新",
+          "switch_debounce": "发送命令后保持充电开关状态的时长（防止界面闪烁）"
+        }
+      }
     }
   }
 }

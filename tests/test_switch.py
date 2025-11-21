@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import time
 from typing import Any
 from unittest.mock import patch
 
@@ -12,7 +13,7 @@ async def test_charging_switch(
     hass: HomeAssistant,
     setup_integration: Any,
 ) -> None:
-    """Test charging switch."""
+    """Test charging switch exists and reflects charger state."""
     # Check charging switch exists
     charging_switch = hass.states.get(
         "switch.duosida_ev_charger_192_168_1_100_charging"
@@ -65,6 +66,56 @@ async def test_charging_switch_turn_off(
         mock_stop.assert_called_once()
 
 
+async def test_charging_switch_debounce(
+    hass: HomeAssistant,
+    setup_integration: Any,
+) -> None:
+    """Test charging switch debounce logic."""
+    from custom_components.duosida_ev.const import COORDINATOR, DOMAIN
+    from custom_components.duosida_ev.switch import DuosidaChargingSwitch
+
+    # Get coordinator
+    coordinator = hass.data[DOMAIN][setup_integration.entry_id][COORDINATOR]
+
+    # Create a switch instance directly
+    switch = DuosidaChargingSwitch(coordinator, "03123456789012345678")
+    switch.hass = hass
+
+    # Initially, should return actual state (conn_status == 2 means charging)
+    coordinator.data = {"conn_status": 0}  # Not charging
+    assert switch.is_on is False
+
+    # Simulate sending turn_on command (sets optimistic state)
+    switch._optimistic_state = True
+    switch._last_command_time = time.monotonic()
+
+    # Now should return optimistic state despite coordinator data
+    assert switch.is_on is True
+
+    # Even if coordinator data says not charging, debounce keeps it True
+    coordinator.data = {"conn_status": 0}
+    assert switch.is_on is True
+
+
+async def test_charging_switch_no_data(
+    hass: HomeAssistant,
+    setup_integration: Any,
+) -> None:
+    """Test charging switch when coordinator has no data."""
+    from custom_components.duosida_ev.const import COORDINATOR, DOMAIN
+    from custom_components.duosida_ev.switch import DuosidaChargingSwitch
+
+    # Get coordinator
+    coordinator = hass.data[DOMAIN][setup_integration.entry_id][COORDINATOR]
+
+    # Create a switch instance directly
+    switch = DuosidaChargingSwitch(coordinator, "03123456789012345678")
+
+    # Test is_on when coordinator.data is None
+    coordinator.data = None
+    assert switch.is_on is False
+
+
 async def test_direct_mode_switch(
     hass: HomeAssistant,
     setup_integration: Any,
@@ -87,25 +138,6 @@ async def test_stop_on_disconnect_switch(
         "switch.duosida_ev_charger_192_168_1_100_stop_session_on_vehicle_disconnect"
     )
     assert stop_switch is None  # Disabled by default
-
-
-async def test_charging_switch_with_no_data(
-    hass: HomeAssistant,
-    setup_integration: Any,
-) -> None:
-    """Test charging switch property when coordinator has no data."""
-    from custom_components.duosida_ev.const import COORDINATOR, DOMAIN
-    from custom_components.duosida_ev.switch import DuosidaChargingSwitch
-
-    # Get coordinator
-    coordinator = hass.data[DOMAIN][setup_integration.entry_id][COORDINATOR]
-
-    # Create a switch instance directly
-    switch = DuosidaChargingSwitch(coordinator, "03123456789012345678")
-
-    # Test is_on when coordinator.data is None
-    coordinator.data = None
-    assert switch.is_on is False
 
 
 async def test_direct_mode_switch_property(

@@ -120,6 +120,27 @@
       "reset_energy": {
         "name": "Reiniciar Energía Total"
       }
+    },
+    "binary_sensor": {
+      "charging": {
+        "name": "Carga"
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Opciones del Cargador Duosida EV",
+        "description": "Configurar ajustes de la integración",
+        "data": {
+          "scan_interval": "Intervalo de actualización (segundos)",
+          "switch_debounce": "Antirrebote del interruptor de carga (segundos)"
+        },
+        "data_description": {
+          "scan_interval": "Con qué frecuencia consultar el cargador para actualizaciones de estado",
+          "switch_debounce": "Cuánto tiempo mantener el estado del interruptor de carga después de enviar un comando (evita oscilación en la interfaz)"
+        }
+      }
     }
   }
 }

@@ -28,8 +28,10 @@ from duosida_ev import DuosidaCharger, discover_chargers
 from .const import (
     CONF_DEVICE_ID,
     CONF_SCAN_INTERVAL,
+    CONF_SWITCH_DEBOUNCE,
     DEFAULT_PORT,
     DEFAULT_SCAN_INTERVAL,
+    DEFAULT_SWITCH_DEBOUNCE,
     DOMAIN,
 )
 
@@ -306,6 +308,7 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
 
     Currently supports:
     - Scan interval (how often to poll the charger)
+    - Switch debounce (how long to ignore updates after sending a command)
     """
 
     def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
@@ -344,6 +347,10 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
             CONF_SCAN_INTERVAL,
             self.config_entry.data.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL),
         )
+        current_switch_debounce = self.config_entry.options.get(
+            CONF_SWITCH_DEBOUNCE,
+            self.config_entry.data.get(CONF_SWITCH_DEBOUNCE, DEFAULT_SWITCH_DEBOUNCE),
+        )
 
         # Show the options form
         return self.async_show_form(
@@ -354,9 +361,10 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                         CONF_SCAN_INTERVAL,
                         default=current_scan_interval,
                     ): vol.All(int, vol.Range(min=5, max=300)),
+                    vol.Optional(
+                        CONF_SWITCH_DEBOUNCE,
+                        default=current_switch_debounce,
+                    ): vol.All(int, vol.Range(min=5, max=120)),
                 }
             ),
-            description_placeholders={
-                "current_interval": str(current_scan_interval),
-            },
         )

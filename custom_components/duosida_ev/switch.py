@@ -1,16 +1,18 @@
 """
-Switch platform for Duosida Local.
+Switch platform for Duosida EV Charger.
 
 Switches are on/off entities that control something on the device.
 Unlike sensors which are read-only, switches can be toggled.
 
-This integration provides two switches:
-1. Charging Switch - Start/stop charging
+This integration provides:
+1. Charging Switch - Start/stop charging (with debounce to prevent state bounce)
 2. Direct Mode Switch - Enable/disable plug-and-charge mode
+3. Stop on Disconnect Switch - Stop session when vehicle disconnects
 """
 
 from __future__ import annotations
 
+import time
 from typing import Any
 
 from homeassistant.components.switch import SwitchEntity
@@ -52,15 +54,21 @@ async def async_setup_entry(
 
 class DuosidaChargingSwitch(DuosidaEntity, SwitchEntity):
     """
-    Switch to control charging.
+    Switch to control charging with debounce logic.
 
     When turned ON: Sends start charging command
     When turned OFF: Sends stop charging command
 
-    The switch state reflects the current charging status from the charger.
+    The switch uses debounce logic to prevent state bouncing:
+    - After sending a command, the switch shows the optimistic state
+    - Coordinator updates are ignored for the configured debounce period
+    - After the debounce period, the switch syncs with the actual charger state
+    - Debounce time is configurable via integration options (default: 30 seconds)
+
+    This prevents the confusing flip-flop that occurs because the charger
+    takes time to transition between states (e.g., Available → Preparing → Charging).
     """
 
-    # Entity attributes
     _attr_name = "Charging"
     _attr_icon = "mdi:ev-station"
 
@@ -72,18 +80,35 @@ class DuosidaChargingSwitch(DuosidaEntity, SwitchEntity):
         """Initialize the charging switch."""
         super().__init__(coordinator, device_id)
         self._attr_unique_id = f"{device_id}_charging"
+        # Track when we last sent a command for debounce
+        self._last_command_time: float | None = None
+        # Track the optimistic state we want to show during debounce
+        self._optimistic_state: bool | None = None
 
     @property
     def is_on(self) -> bool:
         """
         Return true if charging is active.
 
-        We check the conn_status value from the charger.
-        Status 2 means "Charging" is active.
+        Uses debounce logic: if we recently sent a command, return the
+        optimistic state instead of the actual charger state. This prevents
+        the UI from bouncing during state transitions.
 
         Returns:
-            True if currently charging, False otherwise
+            True if currently charging (or optimistically charging), False otherwise
         """
+        # Check if we're in the debounce window
+        if self._last_command_time is not None and self._optimistic_state is not None:
+            elapsed = time.monotonic() - self._last_command_time
+            if elapsed < self.coordinator.switch_debounce:
+                # Still in debounce window, return optimistic state
+                return self._optimistic_state
+            else:
+                # Debounce window expired, clear the optimistic state
+                self._last_command_time = None
+                self._optimistic_state = None
+
+        # Return actual state from coordinator
         if not self.coordinator.data:
             return False
 
@@ -94,23 +119,32 @@ class DuosidaChargingSwitch(DuosidaEntity, SwitchEntity):
         """
         Start charging.
 
-        Called when user toggles the switch ON in the UI.
-        Sends the start command through the coordinator.
-
-        Args:
-            **kwargs: Additional arguments (not used)
+        Sets optimistic state and starts debounce timer before sending command.
         """
+        # Set optimistic state before sending command
+        self._optimistic_state = True
+        self._last_command_time = time.monotonic()
+
+        # Update UI immediately with optimistic state
+        self.async_write_ha_state()
+
+        # Send the actual command
         await self.coordinator.async_start_charging()
 
     async def async_turn_off(self, **kwargs: Any) -> None:
         """
         Stop charging.
 
-        Called when user toggles the switch OFF in the UI.
-
-        Args:
-            **kwargs: Additional arguments (not used)
+        Sets optimistic state and starts debounce timer before sending command.
         """
+        # Set optimistic state before sending command
+        self._optimistic_state = False
+        self._last_command_time = time.monotonic()
+
+        # Update UI immediately with optimistic state
+        self.async_write_ha_state()
+
+        # Send the actual command
         await self.coordinator.async_stop_charging()
 
 

@@ -33,6 +33,7 @@ COORDINATOR: Final = "coordinator"
 # These match the keys used in the config flow
 CONF_DEVICE_ID: Final = "device_id"
 CONF_SCAN_INTERVAL: Final = "scan_interval"
+CONF_SWITCH_DEBOUNCE: Final = "switch_debounce"
 
 # =============================================================================
 # Default values
@@ -44,6 +45,11 @@ DEFAULT_PORT: Final = 9988
 # Default polling interval in seconds
 # How often we fetch status from the charger
 DEFAULT_SCAN_INTERVAL: Final = 10
+
+# Default debounce delay for charging switch in seconds
+# After sending a start/stop command, the switch ignores coordinator updates
+# for this many seconds to prevent UI bounce during state transitions
+DEFAULT_SWITCH_DEBOUNCE: Final = 30
 
 # =============================================================================
 # Connection retry settings

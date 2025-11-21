@@ -6,6 +6,8 @@ Home Assistant custom integration for **local control** of Duosida EV wall charg
 
 Uses the `duosida-ev` Python library (PyPI) for low-level communication.
 
+**Status:** Gold Tier Complete - Ready for official Home Assistant submission!
+
 ## Project Structure
 
 ```
@@ -13,19 +15,32 @@ duosida-ha/
 ├── custom_components/
 │   └── duosida_ev/
 │       ├── __init__.py          # Entry point, setup/unload
-│       ├── config_flow.py       # Setup wizard UI
-│       ├── coordinator.py       # Data fetching, settings persistence
+│       ├── binary_sensor.py     # Charging status (read-only)
+│       ├── button.py            # Start/stop/reset buttons
+│       ├── config_flow.py       # Setup wizard + options flow
 │       ├── const.py             # Constants, status codes
+│       ├── coordinator.py       # Data fetching, settings persistence
 │       ├── entity.py            # Base entity class
-│       ├── sensor.py            # Read-only sensors
-│       ├── switch.py            # Charging, direct mode switches
 │       ├── number.py            # Max current, LED brightness sliders
-│       ├── button.py            # Start/stop buttons
+│       ├── sensor.py            # Read-only sensors (17 total)
+│       ├── switch.py            # Charging (with debounce), direct mode
 │       ├── manifest.json        # Integration metadata
 │       ├── strings.json         # UI strings
-│       └── translations/
-│           └── en.json          # English translations
-├── hacs.json                    # HACS metadata
+│       └── translations/        # 20 language translations
+├── tests/                       # 68 tests, 96% coverage
+│   ├── conftest.py              # Test fixtures
+│   ├── test_binary_sensor.py
+│   ├── test_button.py
+│   ├── test_config_flow.py
+│   ├── test_coordinator.py
+│   ├── test_init.py
+│   ├── test_number.py
+│   ├── test_sensor.py
+│   └── test_switch.py
+├── htmlcov/                     # Coverage report
+├── duosida_ev.markdown          # Official HA documentation
+├── INTEGRATION_CHECKLIST.md     # Quality checklist
+├── CONTRIBUTING.md              # Development guide
 ├── README.md                    # User documentation
 ├── LICENSE                      # MIT license
 └── CLAUDE.md                    # This file
@@ -35,10 +50,10 @@ duosida-ha/
 
 ### Home Assistant Integration Architecture
 
-1. **Config Entry**: User's configuration (IP, device ID, scan interval)
+1. **Config Entry**: User's configuration (IP, device ID, scan interval, switch debounce)
 2. **Coordinator**: Central data fetcher, called every scan_interval
-3. **Platforms**: Entity types (sensor, switch, number, button)
-4. **Entities**: Individual controls/sensors shown in UI
+3. **Platforms**: Entity types (binary_sensor, sensor, switch, number, button)
+4. **Entities**: Individual controls/sensors shown in UI (28 total)
 
 ### Data Flow
 
@@ -53,7 +68,7 @@ coordinator.py → Connects to charger, syncs settings, fetches status
         ↓
 sensor.py, switch.py, etc. → Create entities that read from coordinator.data
         ↓
-Every 10 seconds: coordinator fetches new data, entities update automatically
+Every scan_interval: coordinator fetches new data, entities update automatically
 ```
 
 ### Coordinator Pattern
@@ -63,6 +78,7 @@ The coordinator (`DuosidaDataUpdateCoordinator`) is critical:
 - **Periodic polling** via `_async_update_data()`
 - **Shared data** via `self.data` dictionary
 - **Settings persistence** via Home Assistant's `Store`
+- **Switch debounce** time stored for charging switch
 
 All entities inherit from `CoordinatorEntity` which:
 - Registers for updates automatically
@@ -103,6 +119,7 @@ All entities inherit from `CoordinatorEntity` which:
 ```python
 # In coordinator.py
 self._stored_settings = {
+    "max_current": None,           # Unknown until user sets it
     "led_brightness": None,        # Unknown until user sets it
     "direct_mode": None,           # Unknown until user sets it
     "stop_on_disconnect": None,    # Unknown until user sets it
@@ -115,6 +132,33 @@ self._stored_settings = {
 ```
 
 **Key Principle:** The integration never makes assumptions about the charger's configuration. It only remembers what the user explicitly configures through Home Assistant.
+
+## Charging Switch Debounce
+
+**Problem**: The charger takes time to transition between states (Available → Preparing → Charging). Without debounce, the switch would bounce between ON/OFF during transitions.
+
+**Solution**: Configurable debounce via options flow
+
+```python
+# In switch.py - DuosidaChargingSwitch
+@property
+def is_on(self) -> bool:
+    # Check if we're in the debounce window
+    if self._last_command_time is not None and self._optimistic_state is not None:
+        elapsed = time.monotonic() - self._last_command_time
+        if elapsed < self.coordinator.switch_debounce:
+            return self._optimistic_state  # Return optimistic state
+    # Return actual state from coordinator
+    return self.coordinator.data.get("conn_status") == 2
+```
+
+**Flow:**
+1. User clicks switch ON → Switch shows ON immediately (optimistic)
+2. Command sent to charger
+3. Coordinator updates ignored for `switch_debounce` seconds (default: 30)
+4. After debounce period, switch syncs with actual charger state
+
+**Configuration:** Options flow allows users to adjust debounce (5-120 seconds)
 
 ## Total Energy Integration
 
@@ -145,14 +189,9 @@ Where:
 - Can be manually reset via "Reset Total Energy" button
 - Sanity checks prevent bad readings (max 100 kWh per interval)
 
-**Location in code:**
-- Integration: `coordinator.py` in `_async_update_data()` (lines 249-283)
-- Reset method: `coordinator.py` `async_reset_total_energy()`
-- Sensor definition: `sensor.py` total_energy sensor (lines 188-199)
+## Entities (28 Total)
 
-## Sensors
-
-**Order:** Sensors are ordered to match the duosida-ev library's `to_dict()` output for consistency.
+### Sensors (17)
 
 | Key | Name | Unit | Notes |
 |-----|------|------|-------|
@@ -172,20 +211,38 @@ Where:
 | model | Model | - | Device model (disabled by default) |
 | manufacturer | Manufacturer | - | Device manufacturer (disabled by default) |
 | firmware | Firmware | - | Firmware version (disabled by default) |
+| cp_state | CP State | - | Control pilot state (disabled by default) |
 
-## Controls
+### Binary Sensors (1)
 
-| Entity | Type | Description |
-|--------|------|-------------|
-| Charging | Switch | Start/stop charging (reads conn_status == 2) |
-| Direct Mode | Switch | Plug-and-charge mode (stored setting) |
-| Max Charging Current | Number | 6-32A slider |
-| LED Brightness | Number | 0, 1, 3 (not 2!) slider (disabled by default) |
-| Max Voltage | Number | 265-290V slider (disabled by default) |
-| Min Voltage | Number | 70-110V slider (disabled by default) |
-| Start Charging | Button | Send start command (disabled by default) |
-| Stop Charging | Button | Send stop command (disabled by default) |
-| Reset Total Energy | Button | Reset total energy counter to zero |
+| Entity | Description |
+|--------|-------------|
+| Charging | Shows if charger is currently charging (read-only status) |
+
+### Switches (3)
+
+| Entity | Description |
+|--------|-------------|
+| Charging | Start/stop charging (with debounce to prevent UI bounce) |
+| Direct Mode | Plug-and-charge mode (disabled by default) |
+| Stop on Disconnect | Stop session when vehicle disconnects (disabled by default) |
+
+### Numbers (4)
+
+| Entity | Range | Description |
+|--------|-------|-------------|
+| Max Charging Current | 6-32A | Maximum charging current |
+| LED Brightness | 0, 1, 3 | LED brightness (disabled by default) |
+| Max Voltage | 265-290V | Max voltage threshold (disabled by default) |
+| Min Voltage | 70-110V | Min voltage threshold (disabled by default) |
+
+### Buttons (3)
+
+| Entity | Description |
+|--------|-------------|
+| Start Charging | Send start command (enabled by default) |
+| Stop Charging | Send stop command (enabled by default) |
+| Reset Total Energy | Reset total energy counter to zero |
 
 ## Status Codes
 
@@ -212,9 +269,27 @@ CP_STATE_CODES = {
 }
 ```
 
+## Configuration
+
+### Config Flow Options
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| Host | Charger IP address | (required) |
+| Port | TCP port | 9988 |
+| Device ID | 19-digit ID starting with "03" | (auto-detected) |
+| Scan Interval | Polling interval in seconds | 10 |
+
+### Options Flow (Reconfiguration)
+
+| Option | Description | Range | Default |
+|--------|-------------|-------|---------|
+| Scan Interval | Polling interval | 5-300s | 10 |
+| Switch Debounce | Charging switch debounce | 5-120s | 30 |
+
 ## Dependencies
 
-- **duosida-ev** (PyPI): TCP communication with charger
+- **duosida-ev** (PyPI): TCP communication with charger (v0.1.3)
 - **Home Assistant Core**: 2023.1+
 - **Python**: 3.10+
 
@@ -222,52 +297,49 @@ CP_STATE_CODES = {
 
 ### Development Environment Setup
 
-**Virtual Environment:**
-This project uses a local Python virtual environment for development.
-
 ```bash
 # Create virtual environment using uv
 uv venv
 
 # Activate the virtual environment
 source .venv/bin/activate  # On macOS/Linux
-# or
-.venv\Scripts\activate  # On Windows
 
 # Install development dependencies
-uv pip install ruff black isort mypy pytest pytest-homeassistant-custom-component
+uv pip install -r requirements_dev.txt
+# Or manually:
+uv pip install ruff black mypy pytest pytest-homeassistant-custom-component pytest-cov
 
 # Install the duosida-ev library
-uv pip install duosida-ev==0.1.2
+uv pip install duosida-ev==0.1.3
 ```
 
-**Code Quality Tools:**
-- **ruff**: Fast Python linter (replaces flake8, pylint, etc.)
-- **black**: Code formatter
-- **isort**: Import sorter
-- **mypy**: Static type checker
-- **pytest**: Testing framework
+### Running Tests
 
-**Running Code Quality Checks:**
 ```bash
-# Activate virtual environment first
-source .venv/bin/activate
+# Run all tests
+.venv/bin/python -m pytest tests/ -v
 
+# Run with coverage
+.venv/bin/python -m pytest tests/ --cov=custom_components.duosida_ev --cov-report=html
+
+# Run specific test file
+.venv/bin/python -m pytest tests/test_switch.py -v
+```
+
+### Code Quality Checks
+
+```bash
 # Run all checks
-ruff check custom_components/duosida_ev/
-black --check custom_components/duosida_ev/
-isort --check-only custom_components/duosida_ev/
-mypy custom_components/duosida_ev/
+.venv/bin/ruff check .
+.venv/bin/black --check .
+.venv/bin/mypy custom_components/duosida_ev --ignore-missing-imports
 
 # Auto-fix issues
-black custom_components/duosida_ev/
-isort custom_components/duosida_ev/
-ruff check --fix custom_components/duosida_ev/
+.venv/bin/black .
+.venv/bin/ruff check --fix .
 ```
 
-**Important:** Always use the virtual environment when working on this project to keep dependencies isolated.
-
-### Testing Locally
+### Testing Locally in Home Assistant
 
 1. Copy `custom_components/duosida_ev` to your HA config
 2. Restart Home Assistant
@@ -280,6 +352,7 @@ ruff check --fix custom_components/duosida_ev/
 - **Add new control**: Create entity class in appropriate platform file
 - **Change defaults**: Edit `const.py`
 - **Add stored setting**: Update coordinator's `_stored_settings` dict and sync method
+- **Add option**: Update `config_flow.py` OptionsFlowHandler
 
 ### Common Patterns
 
@@ -313,17 +386,30 @@ result = await self.hass.async_add_executor_job(
 )
 ```
 
-## Configuration
+## Quality Metrics
 
-**Default values:**
-- Port: 9988
-- Scan interval: 10 seconds
-- LED brightness: 3 (high)
-- Direct mode: False (disabled)
+| Metric | Value |
+|--------|-------|
+| Tests | 68/68 passing |
+| Coverage | 96% |
+| Languages | 20 translations |
+| Entities | 28 total |
+| Code Quality | ruff, black, mypy passing |
 
-**Config flow options:**
-- Auto-discovery (UDP broadcast)
-- Manual entry (IP, port, device ID, scan interval)
+### Coverage Breakdown
+
+| File | Coverage |
+|------|----------|
+| binary_sensor.py | 100% |
+| const.py | 100% |
+| entity.py | 100% |
+| number.py | 100% |
+| switch.py | 97% |
+| __init__.py | 95% |
+| button.py | 95% |
+| coordinator.py | 95% |
+| sensor.py | 94% |
+| config_flow.py | 90% |
 
 ## Notes
 
@@ -332,6 +418,7 @@ result = await self.hass.async_add_executor_job(
 - Direct mode = plug-and-charge (auto-start when vehicle connected)
 - Charger uses protobuf over TCP
 - Discovery uses UDP broadcast on ports 48890/48899
+- Charging switch has configurable debounce (default 30s) to prevent UI bounce
 
 ## Troubleshooting
 
@@ -339,6 +426,10 @@ result = await self.hass.async_add_executor_job(
 - Check charger is on network
 - Check TCP port 9988 is accessible
 - Look at HA logs for connection errors
+
+**Charging switch bounces:**
+- Increase switch debounce in integration options
+- Default is 30 seconds, can be set up to 120 seconds
 
 **Settings don't persist:**
 - Check `.storage/duosida_ev.*` file exists

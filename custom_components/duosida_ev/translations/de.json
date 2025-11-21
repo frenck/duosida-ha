@@ -120,6 +120,27 @@
       "reset_energy": {
         "name": "Gesamtenergie Zurücksetzen"
       }
+    },
+    "binary_sensor": {
+      "charging": {
+        "name": "Laden"
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Duosida EV Ladegerät Optionen",
+        "description": "Integrationseinstellungen konfigurieren",
+        "data": {
+          "scan_interval": "Aktualisierungsintervall (Sekunden)",
+          "switch_debounce": "Ladeschalter-Entprellung (Sekunden)"
+        },
+        "data_description": {
+          "scan_interval": "Wie oft das Ladegerät nach Statusaktualisierungen abgefragt wird",
+          "switch_debounce": "Wie lange der Ladeschalter-Zustand nach dem Senden eines Befehls gehalten wird (verhindert UI-Flackern)"
+        }
+      }
     }
   }
 }

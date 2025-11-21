@@ -120,6 +120,27 @@
       "reset_energy": {
         "name": "Nulstil Total Energi"
       }
+    },
+    "binary_sensor": {
+      "charging": {
+        "name": "Opladning"
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Duosida EV Oplader Indstillinger",
+        "description": "Konfigurer integrationsindstillinger",
+        "data": {
+          "scan_interval": "Opdateringsinterval (sekunder)",
+          "switch_debounce": "Opladningskontakt debounce (sekunder)"
+        },
+        "data_description": {
+          "scan_interval": "Hvor ofte opladeren spørges om statusopdateringer",
+          "switch_debounce": "Hvor længe opladningskontaktens tilstand holdes efter at en kommando er sendt (forhindrer UI-flimren)"
+        }
+      }
     }
   }
 }

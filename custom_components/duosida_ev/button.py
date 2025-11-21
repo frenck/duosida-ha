@@ -54,13 +54,13 @@ class DuosidaStartButton(DuosidaEntity, ButtonEntity):
     When pressed, sends the start charging command to the charger.
     The charger will begin charging if a vehicle is connected.
 
-    Disabled by default since the Charging switch provides the same functionality.
-    Enable this if you need a button for automations/scripts.
+    This is the primary way to start charging. Use the Charging binary
+    sensor to monitor the current charging status.
     """
 
     _attr_name = "Start Charging"
     _attr_icon = "mdi:play"
-    _attr_entity_registry_enabled_default = False
+    _attr_entity_registry_enabled_default = True
 
     def __init__(
         self,
@@ -88,13 +88,13 @@ class DuosidaStopButton(DuosidaEntity, ButtonEntity):
     When pressed, sends the stop charging command to the charger.
     Charging will stop immediately.
 
-    Disabled by default since the Charging switch provides the same functionality.
-    Enable this if you need a button for automations/scripts.
+    This is the primary way to stop charging. Use the Charging binary
+    sensor to monitor the current charging status.
     """
 
     _attr_name = "Stop Charging"
     _attr_icon = "mdi:stop"
-    _attr_entity_registry_enabled_default = False
+    _attr_entity_registry_enabled_default = True
 
     def __init__(
         self,

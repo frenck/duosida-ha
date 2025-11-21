@@ -13,8 +13,10 @@ from homeassistant.data_entry_flow import FlowResultType
 from custom_components.duosida_ev.const import (
     CONF_DEVICE_ID,
     CONF_SCAN_INTERVAL,
+    CONF_SWITCH_DEBOUNCE,
     DEFAULT_PORT,
     DEFAULT_SCAN_INTERVAL,
+    DEFAULT_SWITCH_DEBOUNCE,
     DOMAIN,
 )
 
@@ -276,14 +278,20 @@ async def test_options_flow(
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "init"
 
-    # Change scan interval to 20 seconds
+    # Change scan interval to 20 seconds (switch_debounce uses default)
     result = await hass.config_entries.options.async_configure(
         result["flow_id"],
-        user_input={CONF_SCAN_INTERVAL: 20},
+        user_input={
+            CONF_SCAN_INTERVAL: 20,
+            CONF_SWITCH_DEBOUNCE: DEFAULT_SWITCH_DEBOUNCE,
+        },
     )
 
     assert result["type"] == FlowResultType.CREATE_ENTRY
-    assert result["data"] == {CONF_SCAN_INTERVAL: 20}
+    assert result["data"] == {
+        CONF_SCAN_INTERVAL: 20,
+        CONF_SWITCH_DEBOUNCE: DEFAULT_SWITCH_DEBOUNCE,
+    }
 
 
 async def test_options_flow_custom_value(
@@ -297,7 +305,7 @@ async def test_options_flow_custom_value(
 
     # Set custom scan interval in options
     hass.config_entries.async_update_entry(
-        mock_config_entry, options={CONF_SCAN_INTERVAL: 15}
+        mock_config_entry, options={CONF_SCAN_INTERVAL: 15, CONF_SWITCH_DEBOUNCE: 45}
     )
 
     # Open options flow
@@ -306,11 +314,11 @@ async def test_options_flow_custom_value(
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "init"
 
-    # Change to 30 seconds
+    # Change to 30 seconds scan interval and 60 seconds debounce
     result = await hass.config_entries.options.async_configure(
         result["flow_id"],
-        user_input={CONF_SCAN_INTERVAL: 30},
+        user_input={CONF_SCAN_INTERVAL: 30, CONF_SWITCH_DEBOUNCE: 60},
     )
 
     assert result["type"] == FlowResultType.CREATE_ENTRY
-    assert result["data"] == {CONF_SCAN_INTERVAL: 30}
+    assert result["data"] == {CONF_SCAN_INTERVAL: 30, CONF_SWITCH_DEBOUNCE: 60}

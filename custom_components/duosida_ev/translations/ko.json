@@ -120,6 +120,27 @@
       "reset_energy": {
         "name": "총 에너지 재설정"
       }
+    },
+    "binary_sensor": {
+      "charging": {
+        "name": "충전"
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Duosida EV 충전기 옵션",
+        "description": "통합 설정 구성",
+        "data": {
+          "scan_interval": "업데이트 간격 (초)",
+          "switch_debounce": "충전 스위치 디바운스 (초)"
+        },
+        "data_description": {
+          "scan_interval": "충전기 상태 업데이트를 폴링하는 빈도",
+          "switch_debounce": "명령 전송 후 충전 스위치 상태를 유지하는 시간 (UI 깜박임 방지)"
+        }
+      }
     }
   }
 }

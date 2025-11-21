@@ -68,6 +68,7 @@ class DuosidaDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         charger: DuosidaCharger,
         scan_interval: int,
         device_id: str,
+        switch_debounce: int = 30,
     ) -> None:
         """
         Initialize the coordinator.
@@ -77,6 +78,7 @@ class DuosidaDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             charger: The DuosidaCharger instance for communication
             scan_interval: How often to fetch data (in seconds)
             device_id: Device ID for storage key
+            switch_debounce: Debounce time for charging switch (in seconds)
         """
         # Initialize the parent class
         # This sets up the polling mechanism
@@ -89,6 +91,10 @@ class DuosidaDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
         # Store the charger instance for later use
         self.charger = charger
+
+        # Store the switch debounce time (in seconds)
+        # Used by charging switch to prevent UI bounce during state transitions
+        self.switch_debounce = switch_debounce
 
         # Track if we've done initial settings sync
         # Connection is now opened/closed for each operation

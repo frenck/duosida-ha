@@ -120,6 +120,27 @@
       "reset_energy": {
         "name": "Tilbakestill Total Energi"
       }
+    },
+    "binary_sensor": {
+      "charging": {
+        "name": "Lading"
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Duosida EV Lader Alternativer",
+        "description": "Konfigurer integrasjonsinnstillinger",
+        "data": {
+          "scan_interval": "Oppdateringsintervall (sekunder)",
+          "switch_debounce": "Ladebryteravstøyning (sekunder)"
+        },
+        "data_description": {
+          "scan_interval": "Hvor ofte laderen spørres om statusoppdateringer",
+          "switch_debounce": "Hvor lenge ladebrytertilstanden holdes etter at en kommando er sendt (forhindrer UI-flimring)"
+        }
+      }
     }
   }
 }

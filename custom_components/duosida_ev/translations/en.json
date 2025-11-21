@@ -120,6 +120,27 @@
       "reset_energy": {
         "name": "Reset Total Energy"
       }
+    },
+    "binary_sensor": {
+      "charging": {
+        "name": "Charging"
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Duosida EV Charger Options",
+        "description": "Configure integration settings",
+        "data": {
+          "scan_interval": "Update interval (seconds)",
+          "switch_debounce": "Charging switch debounce (seconds)"
+        },
+        "data_description": {
+          "scan_interval": "How often to poll the charger for status updates",
+          "switch_debounce": "How long to hold the charging switch state after sending a command (prevents UI bounce)"
+        }
+      }
     }
   }
 }

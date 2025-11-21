@@ -120,6 +120,27 @@
       "reset_energy": {
         "name": "重設總能量"
       }
+    },
+    "binary_sensor": {
+      "charging": {
+        "name": "充電"
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Duosida EV 充電器選項",
+        "description": "設定整合參數",
+        "data": {
+          "scan_interval": "更新間隔（秒）",
+          "switch_debounce": "充電開關防抖（秒）"
+        },
+        "data_description": {
+          "scan_interval": "多久查詢一次充電器狀態更新",
+          "switch_debounce": "傳送命令後保持充電開關狀態的時長（防止介面閃爍）"
+        }
+      }
     }
   }
 }
